@@ -1,0 +1,61 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 100px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.Body {
+  margin: 30px;
+  font-family: "Avenir Next", Arial;
+}
+
+.LeftCol {
+  text-align: left;
+}
+
+.NavBar {
+  text-align: left;
+  flex-flow: row;
+  height: 20px;
+  background-color: #f0efef;
+  margin: 0px;
+}
+
+.NavBar ul {
+  flex-direction: column;
+}
+
+.NavBar li {
+  text-decoration: none;
+  display: inline-flex;
+  padding-left: 10px;
+}
+
+.NavBar a {
+  font: 16px "Avenir Next", Arial;
+  color: cadetblue;
+  display: inline;
+  text-decoration: none;
+}
+
+.NavBar a:hover {
+  color: darkslategrey;
+  text-decoration: underline;
+}
