@@ -10,6 +10,13 @@ export default {
   routes,
   reducer,
   http: {
-    url: path => `https://www.yesno.wtf${path}`
+    url: path => `https://api.youneedabudget.com/v1${path}`
+  },
+  authentication: {
+    accessToken(getCookie, { store, path, url }) {
+      // (check the `url` to make sure the access token
+      //  is not leaked to a third party)
+      return getCookie('accessToken')
+    }
   }
 }

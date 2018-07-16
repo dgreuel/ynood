@@ -59,3 +59,11 @@
   color: darkslategrey;
   text-decoration: underline;
 }
+
+.accountSummary {
+  text-align: right;
+}
+
+.totalRow {
+  font-weight: bold
+}
