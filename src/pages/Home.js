@@ -82,8 +82,17 @@ export default class Basic extends Component {
                   className={
                     (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
                   }>
-                  <td className="accountSummary">{account.name}:</td>
-                  <td className="balances">
+                  <td
+                    className={
+                      (index % 2 === 0 ? 'greyBackground' : '') +
+                      ' accountSummary'
+                    }>
+                    {account.name}:
+                  </td>
+                  <td
+                    className={
+                      (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
+                    }>
                     {accounting.formatMoney(account.balance / 1000)}
                   </td>
                 </tr>

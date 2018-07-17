@@ -63,11 +63,14 @@
 
 .accountSummary {
   text-align: right;
+  padding: 0px;
 }
 
 .greyBackground {
   background-color: #e2dede;
-  margin-bottom: 5px;
+    border-right: 1px solid #e2dede;
+    padding-right: 0px;
+    margin: 0px;
 }
 
 #budgetPicker {
@@ -81,6 +84,8 @@
 .balances {
   width: 100px;
   right: 5px;
+  margin: 0px;
+  padding: 2px;
 }
 
 .accounts {
@@ -94,6 +99,7 @@
   width: 100%;
   background-color: white;
   font-size: 90%;
+  
 }
 
 .YNABside {
