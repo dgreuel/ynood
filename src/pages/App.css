@@ -22,7 +22,7 @@
 }
 
 .Body {
-  margin: 30px;
+  margin: 10px 0;
   font-family: "Avenir Next", Arial;
   width: 100%;
 }
@@ -67,10 +67,11 @@
 
 .greyBackground{
 	background-color: #e2dede;
+	margin-bottom: 5px;
 }
 
 #budgetPicker{
-	margin: 10px 10px 30px;
+	margin: -16px 5px 8px;
 }
 
 .totalRow {
