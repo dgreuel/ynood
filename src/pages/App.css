@@ -24,6 +24,7 @@
 .Body {
   margin: 30px;
   font-family: "Avenir Next", Arial;
+  width: 100%;
 }
 
 .LeftCol {
@@ -64,6 +65,48 @@
   text-align: right;
 }
 
+.greyBackground{
+	background-color: #e2dede;
+}
+
+#budgetPicker{
+	margin: 10px 10px 30px;
+}
+
 .totalRow {
-  font-weight: bold
+  font-weight: bold;
+}
+
+.balances {
+	width: 100px;
+	right: 5px;
+}
+
+.accounts {
+  border: 1px dotted #333;
+  display: inline-flex;
+  align-content: center;
+  width: 90%;
+}
+
+.accountsTable{
+	width: 100%;
+	background-color: white;
+	font-size: 90%;
+	
+}
+
+.YNABside {
+  width: 75%;
+  border: 1px solid #333;
+  margin: 1%;
+    background-color: rgba(212, 242, 242, 0.27);
+}
+
+.YNOUDside {
+  width: 75%;
+  border: 1px solid #333;
+  margin: 1%;
+    background-color: rgba(212, 242, 242, 0.27);
+  
 }

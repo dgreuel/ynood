@@ -70,16 +70,20 @@ export default class Basic extends Component {
     const { YNABaccounts } = this.props
     if (YNABaccounts && YNABaccounts.data && YNABaccounts.data.accounts) {
       return (
-        <table>
+        <table className="accountsTable">
           <tbody>
             {YNABaccounts.data.accounts
               .filter(account => {
                 return this.isDebtAccount(account)
               })
-              .map(account => (
-                <tr key={account.id}>
+              .map((account, index) => (
+                <tr
+                  key={account.id}
+                  className={
+                    (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
+                  }>
                   <td className="accountSummary">{account.name}:</td>
-                  <td align="right">
+                  <td className="balances">
                     {accounting.formatMoney(account.balance / 1000)}
                   </td>
                 </tr>
@@ -107,8 +111,9 @@ export default class Basic extends Component {
   render() {
     const { fetchBudgets, budgets, YNABaccounts } = this.props
     return (
-      <div>
-        <div className="budgets">
+      <div className="accounts">
+        <div className="YNABside">
+          <h2>YNAB Debt Accounts</h2>
           <div id="budgetPickerDiv">{this.budgetPicker.bind(this)()}</div>
           <div id="YNABaccounts">{this.YNABaccountList.bind(this)()}</div>
           <button
@@ -126,6 +131,9 @@ export default class Basic extends Component {
             }}>
             log
           </button>
+        </div>
+        <div className="YNOUDside">
+          <h2>YNOUD Accounts</h2>
         </div>
       </div>
     )
