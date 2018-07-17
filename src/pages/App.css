@@ -65,13 +65,13 @@
   text-align: right;
 }
 
-.greyBackground{
-	background-color: #e2dede;
-	margin-bottom: 5px;
+.greyBackground {
+  background-color: #e2dede;
+  margin-bottom: 5px;
 }
 
-#budgetPicker{
-	margin: -16px 5px 8px;
+#budgetPicker {
+  margin: -16px 5px 8px;
 }
 
 .totalRow {
@@ -79,8 +79,8 @@
 }
 
 .balances {
-	width: 100px;
-	right: 5px;
+  width: 100px;
+  right: 5px;
 }
 
 .accounts {
@@ -90,24 +90,22 @@
   width: 90%;
 }
 
-.accountsTable{
-	width: 100%;
-	background-color: white;
-	font-size: 90%;
-	
+.accountsTable {
+  width: 100%;
+  background-color: white;
+  font-size: 90%;
 }
 
 .YNABside {
   width: 75%;
   border: 1px solid #333;
   margin: 1%;
-    background-color: rgba(212, 242, 242, 0.27);
+  background-color: rgba(212, 242, 242, 0.27);
 }
 
-.YNOUDside {
+.YNOODside {
   width: 75%;
   border: 1px solid #333;
   margin: 1%;
-    background-color: rgba(212, 242, 242, 0.27);
-  
+  background-color: rgba(212, 242, 242, 0.27);
 }

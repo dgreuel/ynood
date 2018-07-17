@@ -1,6 +1,6 @@
 import React from 'react'
 import { IndexLink, Link } from 'react-website'
-import logo from './ynoud_logo.jpg'
+import logo from './ynood_logo.jpg'
 import './App.css'
 
 export default ({ children }) => (

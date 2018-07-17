@@ -132,8 +132,8 @@ export default class Basic extends Component {
             log
           </button>
         </div>
-        <div className="YNOUDside">
-          <h2>YNOUD Accounts</h2>
+        <div className="YNOODside">
+          <h2>YNOOD Accounts</h2>
         </div>
       </div>
     )
