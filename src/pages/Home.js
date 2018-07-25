@@ -76,6 +76,9 @@ export default class Basic extends Component {
               .filter(account => {
                 return this.isDebtAccount(account)
               })
+              .sort(
+                (account1, account2) => (account1.name < account2.name ? -1 : 1)
+              )
               .map((account, index) => (
                 <tr
                   key={account.id}
