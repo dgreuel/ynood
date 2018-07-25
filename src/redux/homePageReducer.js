@@ -93,6 +93,27 @@ export const fetchBudget = redux.action(
   }
 )
 
+export const fetchYNOODaccounts = redux.action(
+  'FETCH_YNOOD_accounts',
+  async ({ http }) => {
+    const response = await http.get(`/~api/v2/getaccounts`)
+    console.log(response)
+    const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
+    const matchArray = regex.exec(response)
+    console.log(matchArray)
+    return JSON.parse(matchArray[1])
+  },
+  // The fetched Budgets list will be placed
+  // into the `Budgets` Redux state property.
+  'ynoodAccounts'
+  //
+  // Or write it like this:
+  // { Budgets: result => result }
+  //
+  // Or write it as a Redux reducer:
+  // (state, result) => ({ ...state, Budgets: result })
+)
+
 // This is the Redux reducer which now
 // handles the asynchronous action defined above.
 
@@ -101,9 +122,8 @@ export const connectBudgets = redux.getProperties
 
 const initialState = {
   budgets: {},
-  YNABbudget: JSON.parse(localStorage.getItem('YNABbudget'))
-    ? JSON.parse(localStorage.getItem('YNABbudget'))
-    : {}
+  YNABbudget: {},
+  ynoodAccounts: {}
 }
 
 // This is the Redux reducer which now

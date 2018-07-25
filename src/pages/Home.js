@@ -4,7 +4,8 @@ import { meta } from 'react-website'
 import {
   fetchBudgetList,
   fetchBudget,
-  connectBudgets
+  connectBudgets,
+  fetchYNOODaccounts
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
 
@@ -15,7 +16,8 @@ import * as accounting from 'accounting'
   ({ homePage }) => connectBudgets(homePage),
   {
     fetchBudgetList,
-    fetchBudget
+    fetchBudget,
+    fetchYNOODaccounts
   }
 )
 export default class Basic extends Component {
@@ -26,10 +28,11 @@ export default class Basic extends Component {
     }
   }
   componentDidMount() {
-    const { fetchBudgetList, fetchBudget } = this.props
+    const { fetchBudgetList, fetchBudget, fetchYNOODaccounts } = this.props
     fetchBudgetList().then(result => {
       fetchBudget(result.data.budgets[0].id)
     })
+    fetchYNOODaccounts()
   }
   budgetPicker = () => {
     const { budgets } = this.props
@@ -127,8 +130,56 @@ export default class Basic extends Component {
     }
     return 'select a budget to list accounts'
   }
+  YNOODaccountList = () => {
+    const { ynoodAccounts } = this.props
+    if (ynoodAccounts && ynoodAccounts.data && ynoodAccounts.data.accounts) {
+      return (
+        <table className="accountsTable">
+          <tbody>
+            {ynoodAccounts.data.accounts
+              .sort(
+                (account1, account2) =>
+                  account1.nickname < account2.nickname ? -1 : 1
+              )
+              .map((account, index) => (
+                <tr
+                  key={'YNOOD-debt-' + account.debt_id}
+                  className={
+                    (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
+                  }>
+                  <td
+                    className={
+                      (index % 2 === 0 ? 'greyBackground' : '') +
+                      ' accountSummary'
+                    }>
+                    {account.nickname}:
+                  </td>
+                  <td
+                    className={
+                      (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
+                    }>
+                    {accounting.formatMoney(account.current_balance)}
+                  </td>
+                </tr>
+              ))}
+            <tr key="total">
+              <td className="accountSummary">Total:</td>
+              <td className="totalRow">
+                {accounting.formatMoney(
+                  ynoodAccounts.data.accounts.reduce((acc, curr) => {
+                    return acc + curr.current_balance
+                  }, 0)
+                )}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      )
+    }
+    return 'no YNOOD accounts found'
+  }
   render() {
-    const { fetchBudgetList, budgets, YNABbudget } = this.props
+    const { budgets, YNABbudget, ynoodAccounts } = this.props
     return (
       <div className="accounts">
         <div className="YNABside">
@@ -138,21 +189,16 @@ export default class Basic extends Component {
           <button
             type="button"
             onClick={() => {
-              fetchBudgetList()
-            }}>
-            fetch
-          </button>
-          <button
-            type="button"
-            onClick={() => {
               console.log(JSON.stringify(budgets))
               console.log(JSON.stringify(YNABbudget))
+              console.log(JSON.stringify(ynoodAccounts))
             }}>
             log
           </button>
         </div>
         <div className="YNOODside">
           <h2>YNOOD Accounts</h2>
+          <div id="YNOODaccounts">{this.YNOODaccountList.bind(this)()}</div>
         </div>
       </div>
     )

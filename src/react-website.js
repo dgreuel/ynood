@@ -10,13 +10,29 @@ export default {
   routes,
   reducer,
   http: {
-    url: path => `https://api.youneedabudget.com/v1${path}`
+    url: path => {
+      if (path.indexOf('~api') !== -1) {
+        //Undebt.it API
+        return `https://undebt.it${path}?id=${localStorage.getItem(
+          'ynoodUserID'
+        )}&key=${localStorage.getItem(
+          'ynoodAppKey'
+        )}&verify=${localStorage.getItem('ynoodVerifyString')}`
+      }
+      return `https://api.youneedabudget.com/v1${path}`
+    }
   },
   authentication: {
     accessToken(getCookie, { store, path, url }) {
-      // (check the `url` to make sure the access token
-      //  is not leaked to a third party)
-      return getCookie('accessToken')
+      // console.log(`reading cookie at ${url}`)
+      if (path.indexOf('~api') !== -1) {
+        //Undebt.it API
+        return null
+      }
+      return getCookie('ynabAccessToken')
     }
+  },
+  errorState: error => {
+    console.log(error)
   }
 }
