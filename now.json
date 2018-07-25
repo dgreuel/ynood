@@ -1,4 +1,12 @@
 {
     "name": "ynood",
-    "alias": "ynood.now.sh"
+    "alias": "ynood.now.sh",
+
+    "env": {
+        "ynoodUserID": "@ynood-user-id",
+        "ynoodAppKey": "@ynood-app-key",
+        "ynoodVerifyString": "@ynood-verify-string",
+        "ynabAccessToken": "@ynab-access-token"
+    }
+
 }
