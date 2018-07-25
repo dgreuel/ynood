@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { meta } from 'react-website'
 import {
-  fetchBudgets,
-  fetchYNABaccounts,
+  fetchBudgetList,
+  fetchBudget,
   connectBudgets
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
@@ -14,8 +14,8 @@ import * as accounting from 'accounting'
 @connect(
   ({ homePage }) => connectBudgets(homePage),
   {
-    fetchYNABaccounts,
-    fetchBudgets
+    fetchBudgetList,
+    fetchBudget
   }
 )
 export default class Basic extends Component {
@@ -26,9 +26,9 @@ export default class Basic extends Component {
     }
   }
   componentDidMount() {
-    const { fetchBudgets, fetchYNABaccounts } = this.props
-    fetchBudgets().then(result => {
-      fetchYNABaccounts(result.data.budgets[0].id)
+    const { fetchBudgetList, fetchBudget } = this.props
+    fetchBudgetList().then(result => {
+      fetchBudget(result.data.budgets[0].id)
     })
   }
   budgetPicker = () => {
@@ -50,13 +50,20 @@ export default class Basic extends Component {
     return 'no budgets available'
   }
   updateSelectedBudget = () => {
-    const { fetchYNABaccounts } = this.props
+    const { fetchBudget, YNABbudget } = this.props
     const selection = document.getElementById('budgetPicker').value
     this.setState({
       selectedBudget: selection
     })
-    // console.log(`getting accounts for ${selection}`)
-    fetchYNABaccounts(selection)
+    if (YNABbudget) {
+      console.log(`getting accounts for ${selection}`)
+      console.log(
+        `${YNABbudget.data.budget.id ? YNABbudget.data.budget.id : '-'} (${
+          YNABbudget.data.budget.name ? YNABbudget.data.budget.name : ''
+        })`
+      )
+    }
+    fetchBudget(selection)
   }
   isDebtAccount = account => {
     return (
@@ -67,12 +74,12 @@ export default class Basic extends Component {
     )
   }
   YNABaccountList = () => {
-    const { YNABaccounts } = this.props
-    if (YNABaccounts && YNABaccounts.data && YNABaccounts.data.accounts) {
+    const { YNABbudget } = this.props
+    if (YNABbudget && YNABbudget.data && YNABbudget.data.budget.accounts) {
       return (
         <table className="accountsTable">
           <tbody>
-            {YNABaccounts.data.accounts
+            {YNABbudget.data.budget.accounts
               .filter(account => {
                 return this.isDebtAccount(account)
               })
@@ -104,7 +111,7 @@ export default class Basic extends Component {
               <td className="accountSummary">Total:</td>
               <td className="totalRow">
                 {accounting.formatMoney(
-                  YNABaccounts.data.accounts
+                  YNABbudget.data.budget.accounts
                     .filter(account => {
                       return this.isDebtAccount(account)
                     })
@@ -121,17 +128,17 @@ export default class Basic extends Component {
     return 'select a budget to list accounts'
   }
   render() {
-    const { fetchBudgets, budgets, YNABaccounts } = this.props
+    const { fetchBudgetList, budgets, YNABbudget } = this.props
     return (
       <div className="accounts">
         <div className="YNABside">
           <h2>YNAB Debt Accounts</h2>
           <div id="budgetPickerDiv">{this.budgetPicker.bind(this)()}</div>
-          <div id="YNABaccounts">{this.YNABaccountList.bind(this)()}</div>
+          <div id="YNABbudget">{this.YNABaccountList.bind(this)()}</div>
           <button
             type="button"
             onClick={() => {
-              fetchBudgets()
+              fetchBudgetList()
             }}>
             fetch
           </button>
@@ -139,7 +146,7 @@ export default class Basic extends Component {
             type="button"
             onClick={() => {
               console.log(JSON.stringify(budgets))
-              console.log(JSON.stringify(YNABaccounts))
+              console.log(JSON.stringify(YNABbudget))
             }}>
             log
           </button>
