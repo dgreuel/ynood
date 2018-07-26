@@ -8,6 +8,7 @@ import {
   fetchYNOODaccounts
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
+import * as _ from 'lodash'
 
 @meta(() => ({
   title: 'Home!'
@@ -76,6 +77,16 @@ export default class Basic extends Component {
       account.balance < 0
     )
   }
+  isYnabAccountConnected = id => {
+    const { ynoodAccounts } = this.props
+
+    return _.find(
+      ynoodAccounts.data.accounts,
+      account => account.ynab_guid === id
+    )
+      ? true
+      : false
+  }
   YNABaccountList = () => {
     const { YNABbudget } = this.props
     if (YNABbudget && YNABbudget.data && YNABbudget.data.budget.accounts) {
@@ -95,6 +106,7 @@ export default class Basic extends Component {
                   className={
                     (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
                   }>
+                  <td className="connectButtons"> </td>
                   <td
                     className={
                       (index % 2 === 0 ? 'greyBackground' : '') +
@@ -108,10 +120,23 @@ export default class Basic extends Component {
                     }>
                     {accounting.formatMoney(account.balance / 1000)}
                   </td>
+                  <td
+                    className={
+                      (index % 2 === 0 ? 'greyBackground' : '') +
+                      ' connectButtons'
+                    }>
+                    {this.isYnabAccountConnected.bind(this)(account.id) ? (
+                      ''
+                    ) : (
+                      <button type="button">Connect-></button>
+                    )}
+                  </td>
                 </tr>
               ))}
             <tr key="total">
-              <td className="accountSummary">Total:</td>
+              <td colspan={2} className="accountSummary">
+                Total:
+              </td>
               <td className="totalRow">
                 {accounting.formatMoney(
                   YNABbudget.data.budget.accounts
@@ -150,6 +175,13 @@ export default class Basic extends Component {
                   <td
                     className={
                       (index % 2 === 0 ? 'greyBackground' : '') +
+                      ' connectButtons'
+                    }>
+                    <button type="button">{`<-Connect`}</button>
+                  </td>
+                  <td
+                    className={
+                      (index % 2 === 0 ? 'greyBackground' : '') +
                       ' accountSummary'
                     }>
                     {account.nickname}:
@@ -160,10 +192,13 @@ export default class Basic extends Component {
                     }>
                     {accounting.formatMoney(account.current_balance)}
                   </td>
+                  <td className="connectButtons"> </td>
                 </tr>
               ))}
             <tr key="total">
-              <td className="accountSummary">Total:</td>
+              <td colspan={2} className="accountSummary">
+                Total:
+              </td>
               <td className="totalRow">
                 {accounting.formatMoney(
                   ynoodAccounts.data.accounts.reduce((acc, curr) => {
@@ -179,22 +214,12 @@ export default class Basic extends Component {
     return 'no YNOOD accounts found'
   }
   render() {
-    const { budgets, YNABbudget, ynoodAccounts } = this.props
     return (
       <div className="accounts">
         <div className="YNABside">
           <h2>YNAB Debt Accounts</h2>
           <div id="budgetPickerDiv">{this.budgetPicker.bind(this)()}</div>
           <div id="YNABbudget">{this.YNABaccountList.bind(this)()}</div>
-          <button
-            type="button"
-            onClick={() => {
-              console.log(JSON.stringify(budgets))
-              console.log(JSON.stringify(YNABbudget))
-              console.log(JSON.stringify(ynoodAccounts))
-            }}>
-            log
-          </button>
         </div>
         <div className="YNOODside">
           <h2>YNOOD Accounts</h2>

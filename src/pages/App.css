@@ -68,9 +68,9 @@
 
 .greyBackground {
   background-color: #e2dede;
-    border-right: 1px solid #e2dede;
-    padding-right: 0px;
-    margin: 0px;
+  border-right: 1px solid #e2dede;
+  padding-right: 0px;
+  margin: 0px;
 }
 
 #budgetPicker {
@@ -99,7 +99,6 @@
   width: 100%;
   background-color: white;
   font-size: 90%;
-  
 }
 
 .YNABside {
@@ -114,4 +113,9 @@
   border: 1px solid #333;
   margin: 1%;
   background-color: rgba(212, 242, 242, 0.27);
+}
+
+.connectButtons {
+  width: 25%;
+  text-align: center;
 }
