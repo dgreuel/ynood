@@ -13,9 +13,11 @@ export default {
     url: path => {
       if (path.indexOf('~api') !== -1) {
         //Undebt.it API
-        return `https://undebt.it${path}?id=${process.env.ynoodUserID}&key=${
-          process.env.ynoodAppKey
-        }&verify=${process.env.ynoodVerifyString}`
+        return `https://undebt.it${path}?id=${
+          process.env.REACT_APP_ynoodUserID
+        }&key=${process.env.REACT_APP_ynoodAppKey}&verify=${
+          process.env.REACT_APP_ynoodVerifyString
+        }`
       }
       return `https://api.youneedabudget.com/v1${path}`
     }
@@ -27,7 +29,7 @@ export default {
         //Undebt.it API
         return null
       }
-      return process.env.ynabAccessToken
+      return process.env.REACT_APP_ynabAccessToken
     }
   },
   errorState: error => {

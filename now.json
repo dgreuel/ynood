@@ -3,10 +3,10 @@
     "alias": "ynood.now.sh",
 
     "env": {
-        "ynoodUserID": "@ynood-user-id",
-        "ynoodAppKey": "@ynood-app-key",
-        "ynoodVerifyString": "@ynood-verify-string",
-        "ynabAccessToken": "@ynab-access-token"
+        "REACT_APP_ynoodUserID": "@ynood-user-id",
+        "REACT_APP_ynoodAppKey": "@ynood-app-key",
+        "REACT_APP_ynoodVerifyString": "@ynood-verify-string",
+        "REACT_APP_ynabAccessToken": "@ynab-access-token"
     }
 
 }
