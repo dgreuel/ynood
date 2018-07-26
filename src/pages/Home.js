@@ -79,13 +79,33 @@ export default class Basic extends Component {
   }
   isYnabAccountConnected = id => {
     const { ynoodAccounts } = this.props
-
-    return _.find(
-      ynoodAccounts.data.accounts,
-      account => account.ynab_guid === id
-    )
-      ? true
-      : false
+    if (ynoodAccounts && ynoodAccounts.data) {
+      return _.find(
+        ynoodAccounts.data.accounts,
+        account => account.ynab_guid === id
+      )
+        ? true
+        : false
+    }
+    return true
+  }
+  isYnoodAccountConnected = id => {
+    const { ynoodAccounts, YNABbudget } = this.props
+    if (ynoodAccounts && ynoodAccounts.data && YNABbudget && YNABbudget.data) {
+      const ynabGuid = _.find(
+        ynoodAccounts.data.accounts,
+        account => account.debt_id === id
+      ).ynab_guid
+      return ynabGuid === null ||
+        ynabGuid === undefined ||
+        _.find(
+          YNABbudget.data.budget.accounts,
+          account => account.id === ynabGuid
+        ) === null
+        ? false
+        : true
+    }
+    return true
   }
   YNABaccountList = () => {
     const { YNABbudget } = this.props
@@ -126,7 +146,7 @@ export default class Basic extends Component {
                       ' connectButtons'
                     }>
                     {this.isYnabAccountConnected.bind(this)(account.id) ? (
-                      ''
+                      <button type="button">Sync-></button>
                     ) : (
                       <button type="button">Connect-></button>
                     )}
@@ -177,7 +197,13 @@ export default class Basic extends Component {
                       (index % 2 === 0 ? 'greyBackground' : '') +
                       ' connectButtons'
                     }>
-                    <button type="button">{`<-Connect`}</button>
+                    {this.isYnoodAccountConnected.bind(this)(
+                      account.debt_id
+                    ) ? (
+                      <button type="button">Disconnect</button>
+                    ) : (
+                      <button type="button">{`<-Connect`}</button>
+                    )}{' '}
                   </td>
                   <td
                     className={
