@@ -5,7 +5,8 @@ import {
   fetchBudgetList,
   fetchBudget,
   connectBudgets,
-  fetchYNOODaccounts
+  fetchYNOODaccounts,
+  updateYnoodAccountBalance
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
 import * as _ from 'lodash'
@@ -18,7 +19,8 @@ import * as _ from 'lodash'
   {
     fetchBudgetList,
     fetchBudget,
-    fetchYNOODaccounts
+    fetchYNOODaccounts,
+    updateYnoodAccountBalance
   }
 )
 export default class Basic extends Component {
@@ -78,6 +80,7 @@ export default class Basic extends Component {
     )
   }
   isYnabAccountConnected = id => {
+    // console.log('checking if connected')
     const { ynoodAccounts } = this.props
     if (ynoodAccounts && ynoodAccounts.data) {
       return _.find(
@@ -89,6 +92,7 @@ export default class Basic extends Component {
     }
     return true
   }
+
   isYnoodAccountConnected = id => {
     const { ynoodAccounts, YNABbudget } = this.props
     if (ynoodAccounts && ynoodAccounts.data && YNABbudget && YNABbudget.data) {
@@ -106,6 +110,37 @@ export default class Basic extends Component {
         : true
     }
     return true
+  }
+  syncYnabAccount = id => {
+    // console.log(`syncing ynab account: ${id}`)
+    const {
+      ynoodAccounts,
+      YNABbudget,
+      updateYnoodAccountBalance,
+      fetchYNOODaccounts
+    } = this.props
+    if (ynoodAccounts && ynoodAccounts.data) {
+      const ynabAccount = _.find(
+        YNABbudget.data.budget.accounts,
+        account => account.id === id
+      )
+      const connectedYnoodAccount = _.find(
+        ynoodAccounts.data.accounts,
+        account => account.ynab_guid === id
+      )
+      const connectedYnoodAccountID = connectedYnoodAccount.debt_id
+      updateYnoodAccountBalance(
+        connectedYnoodAccountID,
+        ynabAccount.balance / -1000
+      ).then(result => {
+        // console.log(result)
+        if (result.rows_affected === 1) {
+          fetchYNOODaccounts()
+        } else {
+          console.log('no change was made')
+        }
+      })
+    }
   }
   YNABaccountList = () => {
     const { YNABbudget } = this.props
@@ -146,7 +181,11 @@ export default class Basic extends Component {
                       ' connectButtons'
                     }>
                     {this.isYnabAccountConnected.bind(this)(account.id) ? (
-                      <button type="button">Sync-></button>
+                      <button
+                        type="button"
+                        onClick={this.syncYnabAccount.bind(this, account.id)}>
+                        Sync->
+                      </button>
                     ) : (
                       <button type="button">Connect-></button>
                     )}
@@ -154,7 +193,7 @@ export default class Basic extends Component {
                 </tr>
               ))}
             <tr key="total">
-              <td colspan={2} className="accountSummary">
+              <td colSpan={2} className="accountSummary">
                 Total:
               </td>
               <td className="totalRow">
@@ -222,7 +261,7 @@ export default class Basic extends Component {
                 </tr>
               ))}
             <tr key="total">
-              <td colspan={2} className="accountSummary">
+              <td colSpan={2} className="accountSummary">
                 Total:
               </td>
               <td className="totalRow">

@@ -120,6 +120,21 @@ export const fetchYNOODaccounts = redux.action(
   // (state, result) => ({ ...state, Budgets: result })
 )
 
+export const updateYnoodAccountBalance = redux.action(
+  'UPDATE_YNOOD_account_balance',
+  async ({ http }, debtID, balance) => {
+    const response = await http.get(
+      `/~api/v2/updateaccount?acct_id=${debtID}&element=balance&value=${balance}`
+    )
+    // console.log(response)
+    const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
+    const matchArray = regex.exec(response)
+    // console.log(matchArray)
+    return JSON.parse(matchArray[1])
+  },
+  'ynoodAccountUpdateResult'
+)
+
 // This is the Redux reducer which now
 // handles the asynchronous action defined above.
 
@@ -129,7 +144,8 @@ export const connectBudgets = redux.getProperties
 const initialState = {
   budgets: {},
   YNABbudget: {},
-  ynoodAccounts: {}
+  ynoodAccounts: {},
+  updatedYnoodAccount: {}
 }
 
 // This is the Redux reducer which now
