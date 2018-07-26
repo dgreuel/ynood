@@ -1,12 +1,14 @@
 {
     "name": "ynood",
     "alias": "ynood.now.sh",
-
-    "env": {
-        "REACT_APP_ynoodUserID": "@ynood-user-id",
-        "REACT_APP_ynoodAppKey": "@ynood-app-key",
-        "REACT_APP_ynoodVerifyString": "@ynood-verify-string",
-        "REACT_APP_ynabAccessToken": "@ynab-access-token"
+    "type": "static",
+    "build": {
+        "env": {
+            "REACT_APP_ynoodUserID": "@ynood-user-id",
+            "REACT_APP_ynoodAppKey": "@ynood-app-key",
+            "REACT_APP_ynoodVerifyString": "@ynood-verify-string",
+            "REACT_APP_ynabAccessToken": "@ynab-access-token"
+        }
     }
 
 }
