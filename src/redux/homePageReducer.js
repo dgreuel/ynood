@@ -5,11 +5,17 @@ const redux = reduxModule('budgets')
 export const fetchBudgetList = redux.action(
   'FETCH_Budgets',
   async ({ http }) => {
-    return await http.get(`/budgets`)
+    const allBudgets = await http.get(`/budgets`)
+    const testBudget = _.filter(allBudgets.data.budgets, budget => {
+      return budget.name === 'test'
+    })
+    return { data: { budgets: testBudget } }
   },
   // The fetched Budgets list will be placed
   // into the `Budgets` Redux state property.
-  'budgets'
+  {
+    budgets: result => result
+  }
   //
   // Or write it like this:
   // { Budgets: result => result }
@@ -97,10 +103,10 @@ export const fetchYNOODaccounts = redux.action(
   'FETCH_YNOOD_accounts',
   async ({ http }) => {
     const response = await http.get(`/~api/v2/getaccounts`)
-    console.log(response)
+    // console.log(response)
     const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
     const matchArray = regex.exec(response)
-    console.log(matchArray)
+    // console.log(matchArray)
     return JSON.parse(matchArray[1])
   },
   // The fetched Budgets list will be placed
