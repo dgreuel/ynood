@@ -8,7 +8,7 @@ script: npm run build # Here you could also run the build step of your applicati
 before_deploy: npm install now --no-save # Install Now CLI on Travis
 deploy:
   - provider: script # Run a custom deployment script which we will define below
-    script: now ./build --token $NOW_TOKEN --public
+    script: now ./build --token $NOW_TOKEN --public --name ynood --local-config=now.json
     skip_cleanup: true
     on:
       all_branches: true
