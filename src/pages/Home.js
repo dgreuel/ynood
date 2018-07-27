@@ -183,6 +183,7 @@ export default class Basic extends Component {
       })
     }
   }
+
   YNABaccountList = () => {
     const { YNABbudget } = this.props
     if (YNABbudget && YNABbudget.data && YNABbudget.data.budget.accounts) {
@@ -234,9 +235,13 @@ export default class Basic extends Component {
                             ? `btn-success`
                             : 'btn-primary'
                         }`}>
-                        {this.isYnabAccountSynced.bind(this)(account.id)
-                          ? `Synced`
-                          : `Sync ` + <FaChevronRight />}
+                        {this.isYnabAccountSynced.bind(this)(account.id) ? (
+                          `Synced`
+                        ) : (
+                          <span>
+                            Sync <FaChevronRight />
+                          </span>
+                        )}
                       </button>
                     ) : (
                       <button
