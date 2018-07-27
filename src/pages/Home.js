@@ -91,6 +91,7 @@ export default class Basic extends Component {
       account.balance < 0
     )
   }
+
   isYnabAccountConnected = id => {
     // console.log('checking if connected')
     const { ynoodAccounts } = this.props
@@ -99,6 +100,32 @@ export default class Basic extends Component {
         ynoodAccounts.data.accounts,
         account => account.ynab_guid === id
       )
+        ? true
+        : false
+    }
+    return true
+  }
+
+  isYnabAccountSynced = id => {
+    // console.log('checking if connected')
+    const { ynoodAccounts, YNABbudget } = this.props
+    const ynabAccount = _.find(
+      YNABbudget.data.budget.accounts,
+      account => account.id === id
+    )
+    let balance = null
+    if (ynabAccount) {
+      balance = ynabAccount.balance
+    }
+    if (ynoodAccounts && ynoodAccounts.data && balance) {
+      return _.find(ynoodAccounts.data.accounts, account => {
+        console.log(account.current_balance)
+        console.log(balance)
+        return (
+          account.ynab_guid === id &&
+          account.current_balance === balance / -1000
+        )
+      })
         ? true
         : false
     }
@@ -196,8 +223,13 @@ export default class Basic extends Component {
                     {this.isYnabAccountConnected.bind(this)(account.id) ? (
                       <button
                         type="button"
+                        disabled={this.isYnabAccountSynced.bind(this)(
+                          account.id
+                        )}
                         onClick={this.syncYnabAccount.bind(this, account.id)}>
-                        Sync->
+                        {this.isYnabAccountSynced.bind(this)(account.id)
+                          ? `Synced->`
+                          : `Sync->`}
                       </button>
                     ) : (
                       <button type="button">Connect-></button>
