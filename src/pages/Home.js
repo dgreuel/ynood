@@ -10,6 +10,7 @@ import {
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
 import * as _ from 'lodash'
+import FaRefresh from 'react-icons/lib/fa/refresh'
 
 @meta(() => ({
   title: 'Home!'
@@ -38,19 +39,30 @@ export default class Basic extends Component {
     fetchYNOODaccounts()
   }
   budgetPicker = () => {
-    const { budgets } = this.props
+    const { budgets, fetchBudgetList } = this.props
     if (budgets && budgets.data && budgets.data.budgets) {
       return (
-        <select
-          id="budgetPicker"
-          value={this.state.selectedBudget}
-          onChange={this.updateSelectedBudget.bind(this)}>
-          {budgets.data.budgets.map(budget => (
-            <option key={budget.id} value={budget.id}>
-              {budget.name}
-            </option>
-          ))}
-        </select>
+        <div id="budgetPickerDiv">
+          Budget:{' '}
+          <select
+            id="budgetPicker"
+            value={this.state.selectedBudget}
+            onChange={this.updateSelectedBudget.bind(this)}>
+            {budgets.data.budgets.map(budget => (
+              <option key={budget.id} value={budget.id}>
+                {budget.name}
+              </option>
+            ))}
+          </select>
+          <button
+            id="refreshYnab"
+            type="button"
+            onClick={() => {
+              fetchBudgetList().then(this.updateSelectedBudget())
+            }}>
+            <FaRefresh />
+          </button>
+        </div>
       )
     }
     return 'no budgets available'
@@ -284,7 +296,8 @@ export default class Basic extends Component {
       <div className="accounts">
         <div className="YNABside">
           <h2>YNAB Debt Accounts</h2>
-          <div id="budgetPickerDiv">{this.budgetPicker.bind(this)()}</div>
+          <div>{this.budgetPicker.bind(this)()}</div>
+
           <div id="YNABbudget">{this.YNABaccountList.bind(this)()}</div>
         </div>
         <div className="YNOODside">
