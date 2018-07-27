@@ -5,7 +5,7 @@ import routes from './routes'
 // (they will be combined into the
 //  root Redux reducer via `combineReducers()`)
 import * as reducer from './redux/index'
-import * as queryString from 'query-string'
+import * as queryString from './deps/query-string'
 
 export default {
   routes,
