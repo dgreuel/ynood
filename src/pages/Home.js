@@ -10,7 +10,7 @@ import {
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
 import * as _ from 'lodash'
-import FaRefresh from 'react-icons/lib/fa/refresh'
+import { FaRefresh, FaChevronRight, FaChevronLeft } from 'react-icons/lib/fa'
 
 @meta(() => ({
   title: 'Home!'
@@ -42,7 +42,7 @@ export default class Basic extends Component {
     const { budgets, fetchBudgetList } = this.props
     if (budgets && budgets.data && budgets.data.budgets) {
       return (
-        <div id="budgetPickerDiv">
+        <div className="budgetPickerDiv">
           Budget:{' '}
           <select
             id="budgetPicker"
@@ -226,13 +226,22 @@ export default class Basic extends Component {
                         disabled={this.isYnabAccountSynced.bind(this)(
                           account.id
                         )}
-                        onClick={this.syncYnabAccount.bind(this, account.id)}>
+                        onClick={this.syncYnabAccount.bind(this, account.id)}
+                        className={`btn btn-sm ${
+                          this.isYnabAccountSynced.bind(this)(account.id)
+                            ? `btn-success`
+                            : 'btn-primary'
+                        }`}>
                         {this.isYnabAccountSynced.bind(this)(account.id)
-                          ? `Synced->`
-                          : `Sync->`}
+                          ? `Synced`
+                          : `Sync ` + <FaChevronRight />}
                       </button>
                     ) : (
-                      <button type="button">Connect-></button>
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-secondary">
+                        Connect <FaChevronRight />
+                      </button>
                     )}
                   </td>
                 </tr>
@@ -263,62 +272,73 @@ export default class Basic extends Component {
     const { ynoodAccounts } = this.props
     if (ynoodAccounts && ynoodAccounts.data && ynoodAccounts.data.accounts) {
       return (
-        <table className="accountsTable">
-          <tbody>
-            {ynoodAccounts.data.accounts
-              .sort(
-                (account1, account2) =>
-                  account1.balance < account2.balance ? -1 : 1
-              )
-              .map((account, index) => (
-                <tr
-                  key={'YNOOD-debt-' + account.debt_id}
-                  className={
-                    (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
-                  }>
-                  <td
-                    className={
-                      (index % 2 === 0 ? 'greyBackground' : '') +
-                      ' connectButtons'
-                    }>
-                    {this.isYnoodAccountConnected.bind(this)(
-                      account.debt_id
-                    ) ? (
-                      <button type="button">Disconnect</button>
-                    ) : (
-                      <button type="button">{`<-Connect`}</button>
-                    )}{' '}
-                  </td>
-                  <td
-                    className={
-                      (index % 2 === 0 ? 'greyBackground' : '') +
-                      ' accountSummary'
-                    }>
-                    {account.nickname}:
-                  </td>
-                  <td
+        <div>
+          <div className="budgetPickerDiv" />
+
+          <table className="accountsTable">
+            <tbody>
+              {ynoodAccounts.data.accounts
+                .sort(
+                  (account1, account2) =>
+                    account1.balance < account2.balance ? -1 : 1
+                )
+                .map((account, index) => (
+                  <tr
+                    key={'YNOOD-debt-' + account.debt_id}
                     className={
                       (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
                     }>
-                    {accounting.formatMoney(account.current_balance)}
-                  </td>
-                  <td className="connectButtons"> </td>
-                </tr>
-              ))}
-            <tr key="total">
-              <td colSpan={2} className="accountSummary">
-                Total:
-              </td>
-              <td className="totalRow">
-                {accounting.formatMoney(
-                  ynoodAccounts.data.accounts.reduce((acc, curr) => {
-                    return acc + curr.current_balance
-                  }, 0)
-                )}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                    <td
+                      className={
+                        (index % 2 === 0 ? 'greyBackground' : '') +
+                        ' connectButtons'
+                      }>
+                      {this.isYnoodAccountConnected.bind(this)(
+                        account.debt_id
+                      ) ? (
+                        <button type="button" className="btn btn-sm btn-danger">
+                          Disconnect
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-secondary">
+                          <FaChevronLeft />
+                          {` Connect`}
+                        </button>
+                      )}{' '}
+                    </td>
+                    <td
+                      className={
+                        (index % 2 === 0 ? 'greyBackground' : '') +
+                        ' accountSummary'
+                      }>
+                      {account.nickname}:
+                    </td>
+                    <td
+                      className={
+                        (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
+                      }>
+                      {accounting.formatMoney(account.current_balance)}
+                    </td>
+                    <td className="connectButtons"> </td>
+                  </tr>
+                ))}
+              <tr key="total">
+                <td colSpan={2} className="accountSummary">
+                  Total:
+                </td>
+                <td className="totalRow">
+                  {accounting.formatMoney(
+                    ynoodAccounts.data.accounts.reduce((acc, curr) => {
+                      return acc + curr.current_balance
+                    }, 0)
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       )
     }
     return 'no YNOOD accounts found'

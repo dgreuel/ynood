@@ -8,14 +8,16 @@ export default ({ children }) => (
     <header className="App-header">
       <img src={logo} className="App-logo" alt="logo" />
     </header>
-    <ul className="Navbar">
-      <li>
+    <nav class="mb-1 navbar navbar-expand-lg navbar-dark ">
+      <a class="navbar-brand">
+        {' '}
         <IndexLink to="/"> Home </IndexLink>
-      </li>
-      <li>
+      </a>
+      <a class="navbar-brand">
         <Link to="/about"> About </Link>
-      </li>
-    </ul>
+      </a>
+    </nav>
+
     <div className="Body">{children}</div>
   </div>
 )

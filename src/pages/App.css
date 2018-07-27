@@ -3,12 +3,13 @@
 }
 
 .App-logo {
-  height: 80px;
+  height: 90px;
+  margin: 0px;
 }
 
 .App-header {
   background-color: #222;
-  height: 100px;
+  height: 130px;
   padding: 20px;
   color: white;
 }
@@ -34,8 +35,8 @@
 .NavBar {
   text-align: left;
   flex-flow: row;
-  height: 20px;
-  background-color: #f0efef;
+  height: 30px;
+  background-color: #248f87;
   margin: 0px;
 }
 
@@ -50,8 +51,8 @@
 }
 
 .NavBar a {
-  font: 16px "Avenir Next", Arial;
-  color: cadetblue;
+  font: 18px "Avenir Next", Arial;
+  color: black;
   display: inline;
   text-decoration: none;
 }
@@ -73,8 +74,9 @@
   margin: 0px;
 }
 
-#budgetPickerDiv {
+.budgetPickerDiv {
   width: 100%;
+  height: 30px;
   text-align: center;
   margin: 10px;
   font-weight: 600;
@@ -100,6 +102,10 @@
   display: inline-flex;
   align-content: center;
   width: 90%;
+}
+
+.accounts h2 {
+  margin: 15px;
 }
 
 .accountsTable {
