@@ -153,7 +153,8 @@ export default class Basic extends Component {
                 return this.isDebtAccount(account)
               })
               .sort(
-                (account1, account2) => (account1.name < account2.name ? -1 : 1)
+                (account1, account2) =>
+                  account1.balance > account2.name ? -1 : 1
               )
               .map((account, index) => (
                 <tr
@@ -223,7 +224,7 @@ export default class Basic extends Component {
             {ynoodAccounts.data.accounts
               .sort(
                 (account1, account2) =>
-                  account1.nickname < account2.nickname ? -1 : 1
+                  account1.balance < account2.balance ? -1 : 1
               )
               .map((account, index) => (
                 <tr
