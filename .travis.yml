@@ -2,8 +2,7 @@ language: node_js
 node_js:
   - "node"
 cache:
-  directories:
-    - "node_modules" # This will tell Travis CI to cache the dependencies
+  yarn
 script: npm run build # Here you could also run the build step of your application
 before_deploy: npm install now --no-save # Install Now CLI on Travis
 deploy:
