@@ -11,15 +11,15 @@ export const fetchBudgetList = redux.action(
     })
     return { data: { budgets: testBudget } }
   },
-  // The fetched Budgets list will be placed
-  // into the `Budgets` Redux state property.
+  // The fetched budget list will be placed
+  // into the `budgets` Redux state property.
+  //
+  // Or write it like this:
+  // { budgets: result => result }
+  //
   {
     budgets: result => result
   }
-  //
-  // Or write it like this:
-  // { Budgets: result => result }
-  //
   // Or write it as a Redux reducer:
   // (state, result) => ({ ...state, Budgets: result })
 )
@@ -40,18 +40,7 @@ export const fetchBudget = redux.action(
 
     return response
   },
-  // The fetched budget will be placed
-  // into the `YNABbudget` Redux state property.
 
-  //   'YNABbudget'
-  // )
-  //
-  // Or write it like this:
-  // { Budgets: result => result }
-  //
-  // Or write it as a Redux reducer:
-  // (state, result) => ({ ...state, Budgets: result })
-  // { YNABbudget: (state, result) => ({ ...state, YNABbudget: result }) }
   {
     YNABbudget: result => {
       // console.log(result)
@@ -109,15 +98,7 @@ export const fetchYNOODaccounts = redux.action(
     // console.log(matchArray)
     return JSON.parse(matchArray[1])
   },
-  // The fetched Budgets list will be placed
-  // into the `Budgets` Redux state property.
   'ynoodAccounts'
-  //
-  // Or write it like this:
-  // { Budgets: result => result }
-  //
-  // Or write it as a Redux reducer:
-  // (state, result) => ({ ...state, Budgets: result })
 )
 
 export const updateYnoodAccountBalance = redux.action(
@@ -134,9 +115,6 @@ export const updateYnoodAccountBalance = redux.action(
   },
   'ynoodAccountUpdateResult'
 )
-
-// This is the Redux reducer which now
-// handles the asynchronous action defined above.
 
 // A little helper for Redux `@connect()`
 export const connectBudgets = redux.getProperties
