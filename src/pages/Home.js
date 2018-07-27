@@ -10,7 +10,9 @@ import {
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
 import * as _ from 'lodash'
-import { FaRefresh, FaChevronRight, FaChevronLeft } from 'react-icons/lib/fa'
+import FaRefresh from 'react-icons/lib/fa/refresh'
+import FaChevronRight from 'react-icons/lib/fa/chevron-right'
+import FaChevronLeft from 'react-icons/lib/fa/chevron-left'
 
 @meta(() => ({
   title: 'Home!'
