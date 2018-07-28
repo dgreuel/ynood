@@ -13,6 +13,7 @@ import * as _ from 'lodash'
 import FaRefresh from 'react-icons/lib/fa/refresh'
 import FaChevronRight from 'react-icons/lib/fa/chevron-right'
 import FaChevronLeft from 'react-icons/lib/fa/chevron-left'
+import FaCheckCircle from 'react-icons/lib/fa/check-circle'
 
 @meta(() => ({
   title: 'Home!'
@@ -236,7 +237,12 @@ export default class Basic extends Component {
                             : 'btn-primary'
                         }`}>
                         {this.isYnabAccountSynced.bind(this)(account.id) ? (
-                          `Synced`
+                          <span>
+                            <span>Synced </span>
+                            <span style={{ fontSize: '14px' }}>
+                              <FaCheckCircle />
+                            </span>
+                          </span>
                         ) : (
                           <span>
                             Sync <FaChevronRight />
