@@ -19,6 +19,7 @@ import FaClose from 'react-icons/lib/fa/close'
 import FaChainBroken from 'react-icons/lib/fa/chain-broken'
 import FaChevronRight from 'react-icons/lib/fa/chevron-right'
 import FaChevronLeft from 'react-icons/lib/fa/chevron-left'
+import * as queryString from '../deps/query-string'
 
 @meta(() => ({
   title: 'Home!'
@@ -368,8 +369,6 @@ export default class Basic extends Component {
     if (ynoodAccounts && ynoodAccounts.data && ynoodAccounts.data.accounts) {
       return (
         <div>
-          <div className="budgetPickerDiv" />
-
           <table className="accountsTable">
             <tbody>
               {ynoodAccounts.data.accounts
@@ -532,6 +531,25 @@ export default class Basic extends Component {
         </div>
         <div className="YNOODside">
           <h2>YNOOD Accounts</h2>
+          <div className="login">
+            <button
+              className="btn btn-sm btn-primary"
+              onClick={() => {
+                const query = queryString.stringify({
+                  email: process.env.REACT_APP_ynoodUserEmail,
+                  verify_key: process.env.REACT_APP_ynoodUserVerifyKey,
+                  user_key: process.env.REACT_APP_ynoodUniqueID,
+                  key: process.env.REACT_APP_ynoodAppKey,
+                  verify: process.env.REACT_APP_ynoodVerifyString
+                })
+                window.open(
+                  `https://undebt.it/private~label/ynab/autologin.php?${query}`,
+                  '_blank'
+                )
+              }}>
+              Log in to YNOOD
+            </button>
+          </div>
           <div id="YNOODaccounts">{this.YNOODaccountList.bind(this)()}</div>
         </div>
       </div>
