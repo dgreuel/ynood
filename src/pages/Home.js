@@ -6,14 +6,19 @@ import {
   fetchBudget,
   connectBudgets,
   fetchYNOODaccounts,
-  updateYnoodAccountBalance
+  updateYnoodAccountBalance,
+  linkYnoodAccountToYnabAccount
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
 import * as _ from 'lodash'
-import FaRefresh from 'react-icons/lib/fa/refresh'
+import MdRefresh from 'react-icons/lib/md/refresh'
+import MdSync from 'react-icons/lib/md/sync'
+import FaChain from 'react-icons/lib/fa/chain'
+import FaCheckCircle from 'react-icons/lib/fa/check-circle'
+import FaClose from 'react-icons/lib/fa/close'
+import FaChainBroken from 'react-icons/lib/fa/chain-broken'
 import FaChevronRight from 'react-icons/lib/fa/chevron-right'
 import FaChevronLeft from 'react-icons/lib/fa/chevron-left'
-import FaCheckCircle from 'react-icons/lib/fa/check-circle'
 
 @meta(() => ({
   title: 'Home!'
@@ -24,14 +29,20 @@ import FaCheckCircle from 'react-icons/lib/fa/check-circle'
     fetchBudgetList,
     fetchBudget,
     fetchYNOODaccounts,
-    updateYnoodAccountBalance
+    updateYnoodAccountBalance,
+    linkYnoodAccountToYnabAccount
   }
 )
 export default class Basic extends Component {
   constructor() {
     super()
     this.state = {
-      selectedBudget: ''
+      selectedBudget: '',
+      linkingAccounts: {
+        leftToRight: false,
+        rightToLeft: false,
+        accountToLink: ''
+      }
     }
   }
   componentDidMount() {
@@ -63,7 +74,7 @@ export default class Basic extends Component {
             onClick={() => {
               fetchBudgetList().then(this.updateSelectedBudget())
             }}>
-            <FaRefresh />
+            <MdRefresh />
           </button>
         </div>
       )
@@ -95,8 +106,8 @@ export default class Basic extends Component {
     )
   }
 
-  isYnabAccountConnected = id => {
-    // console.log('checking if connected')
+  isYnabAccountLinked = id => {
+    // console.log('checking if Linked')
     const { ynoodAccounts } = this.props
     if (ynoodAccounts && ynoodAccounts.data) {
       return _.find(
@@ -110,7 +121,7 @@ export default class Basic extends Component {
   }
 
   isYnabAccountSynced = id => {
-    // console.log('checking if connected')
+    // console.log('checking if Linked')
     const { ynoodAccounts, YNABbudget } = this.props
     const ynabAccount = _.find(
       YNABbudget.data.budget.accounts,
@@ -122,8 +133,6 @@ export default class Basic extends Component {
     }
     if (ynoodAccounts && ynoodAccounts.data && balance) {
       return _.find(ynoodAccounts.data.accounts, account => {
-        console.log(account.current_balance)
-        console.log(balance)
         return (
           account.ynab_guid === id &&
           account.current_balance === balance / -1000
@@ -135,7 +144,7 @@ export default class Basic extends Component {
     return true
   }
 
-  isYnoodAccountConnected = id => {
+  isYnoodAccountLinked = id => {
     const { ynoodAccounts, YNABbudget } = this.props
     if (ynoodAccounts && ynoodAccounts.data && YNABbudget && YNABbudget.data) {
       const ynabGuid = _.find(
@@ -144,6 +153,7 @@ export default class Basic extends Component {
       ).ynab_guid
       return ynabGuid === null ||
         ynabGuid === undefined ||
+        ynabGuid === '\u0000' ||
         _.find(
           YNABbudget.data.budget.accounts,
           account => account.id === ynabGuid
@@ -166,13 +176,13 @@ export default class Basic extends Component {
         YNABbudget.data.budget.accounts,
         account => account.id === id
       )
-      const connectedYnoodAccount = _.find(
+      const linkedYnoodAccount = _.find(
         ynoodAccounts.data.accounts,
         account => account.ynab_guid === id
       )
-      const connectedYnoodAccountID = connectedYnoodAccount.debt_id
+      const linkedYnoodAccountID = linkedYnoodAccount.debt_id
       updateYnoodAccountBalance(
-        connectedYnoodAccountID,
+        linkedYnoodAccountID,
         ynabAccount.balance / -1000
       ).then(result => {
         // console.log(result)
@@ -186,7 +196,11 @@ export default class Basic extends Component {
   }
 
   YNABaccountList = () => {
-    const { YNABbudget } = this.props
+    const {
+      YNABbudget,
+      linkYnoodAccountToYnabAccount,
+      fetchYNOODaccounts
+    } = this.props
     if (YNABbudget && YNABbudget.data && YNABbudget.data.budget.accounts) {
       return (
         <table className="accountsTable">
@@ -209,7 +223,7 @@ export default class Basic extends Component {
                   className={
                     (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
                   }>
-                  <td className="connectButtons"> </td>
+                  <td className="linkButtons"> </td>
                   <td
                     className={
                       (index % 2 === 0 ? 'greyBackground' : '') +
@@ -225,10 +239,9 @@ export default class Basic extends Component {
                   </td>
                   <td
                     className={
-                      (index % 2 === 0 ? 'greyBackground' : '') +
-                      ' connectButtons'
+                      (index % 2 === 0 ? 'greyBackground' : '') + ' linkButtons'
                     }>
-                    {this.isYnabAccountConnected.bind(this)(account.id) ? (
+                    {this.isYnabAccountLinked.bind(this)(account.id) ? (
                       <button
                         type="button"
                         disabled={this.isYnabAccountSynced.bind(this)(
@@ -249,15 +262,76 @@ export default class Basic extends Component {
                           </span>
                         ) : (
                           <span>
-                            Sync <FaChevronRight />
+                            <span>Sync </span>
+                            <span style={{ fontSize: '16px' }}>
+                              <MdSync />
+                            </span>
                           </span>
                         )}
+                      </button>
+                    ) : this.state.linkingAccounts.rightToLeft ? (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-info shaky"
+                        onClick={() => {
+                          linkYnoodAccountToYnabAccount(
+                            this.state.linkingAccounts.accountToLink,
+                            account.id
+                          ).then(result => {
+                            if (result.rows_affected === 1) {
+                              fetchYNOODaccounts()
+                            } else {
+                              alert('could not link accounts')
+                            }
+                            this.setState({
+                              linkingAccounts: {
+                                rightToLeft: false,
+                                leftToRight: false,
+                                accountToLink: ''
+                              }
+                            })
+                          })
+                        }}>
+                        Select
+                      </button>
+                    ) : this.state.linkingAccounts.accountToLink ===
+                    account.id ? (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-danger"
+                        onClick={() =>
+                          this.setState({
+                            linkingAccounts: {
+                              rightToLeft: false,
+                              leftToRight: false,
+                              accountToLink: ''
+                            }
+                          })
+                        }>
+                        <span>Cancel </span>
+                        <span style={{ fontSize: '15px' }}>
+                          <FaClose />
+                        </span>
                       </button>
                     ) : (
                       <button
                         type="button"
-                        className="btn btn-sm btn-secondary">
-                        Connect <FaChevronRight />
+                        className="btn btn-sm btn-secondary"
+                        onClick={() =>
+                          this.setState({
+                            linkingAccounts: {
+                              leftToRight: true,
+                              accountToLink: account.id
+                            }
+                          })
+                        }>
+                        <span>Link </span>
+                        <span style={{ fontSize: '15px' }}>
+                          <FaChain />
+                        </span>
+                        <span style={{ fontSize: '13px' }}>
+                          <FaChevronRight />
+                        </span>
                       </button>
                     )}
                   </td>
@@ -286,7 +360,11 @@ export default class Basic extends Component {
     return 'select a budget to list accounts'
   }
   YNOODaccountList = () => {
-    const { ynoodAccounts } = this.props
+    const {
+      ynoodAccounts,
+      linkYnoodAccountToYnabAccount,
+      fetchYNOODaccounts
+    } = this.props
     if (ynoodAccounts && ynoodAccounts.data && ynoodAccounts.data.accounts) {
       return (
         <div>
@@ -297,9 +375,9 @@ export default class Basic extends Component {
               {ynoodAccounts.data.accounts
                 .sort(
                   (account1, account2) =>
-                    account1.current_balance > account2.current_balance
+                    account1.current_balance < account2.current_balance
                       ? -1
-                      : account1.current_balance < account2.current_balance
+                      : account1.current_balance > account2.current_balance
                         ? 1
                         : 0
                 )
@@ -312,22 +390,101 @@ export default class Basic extends Component {
                     <td
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
-                        ' connectButtons'
+                        ' linkButtons'
                       }>
-                      {this.isYnoodAccountConnected.bind(this)(
-                        account.debt_id
-                      ) ? (
-                        <button type="button" className="btn btn-sm btn-danger">
-                          Disconnect
+                      {this.isYnoodAccountLinked.bind(this)(account.debt_id) ? (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-elegant"
+                          onClick={() => {
+                            linkYnoodAccountToYnabAccount(
+                              account.debt_id,
+                              '%00' //URL-encoded null
+                            ).then(result => {
+                              if (result.rows_affected === 1) {
+                                fetchYNOODaccounts()
+                              } else {
+                                alert('could not unlink accounts')
+                              }
+                              this.setState({
+                                linkingAccounts: {
+                                  rightToLeft: false,
+                                  leftToRight: false,
+                                  accountToLink: ''
+                                }
+                              })
+                            })
+                          }}>
+                          <span style={{ fontSize: '13px' }}>
+                            <FaChainBroken />
+                          </span>
+                          <span> Unlink</span>
+                        </button>
+                      ) : this.state.linkingAccounts.leftToRight ? (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-info shaky"
+                          onClick={() => {
+                            linkYnoodAccountToYnabAccount(
+                              account.debt_id,
+                              this.state.linkingAccounts.accountToLink
+                            ).then(result => {
+                              if (result.rows_affected === 1) {
+                                fetchYNOODaccounts()
+                              } else {
+                                alert('could not link accounts')
+                              }
+                              this.setState({
+                                linkingAccounts: {
+                                  rightToLeft: false,
+                                  leftToRight: false,
+                                  accountToLink: ''
+                                }
+                              })
+                            })
+                          }}>
+                          Select
+                        </button>
+                      ) : this.state.linkingAccounts.accountToLink ===
+                      account.debt_id ? (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger"
+                          onClick={() =>
+                            this.setState({
+                              linkingAccounts: {
+                                rightToLeft: false,
+                                leftToRight: false,
+                                accountToLink: ''
+                              }
+                            })
+                          }>
+                          <span>Cancel </span>
+                          <span style={{ fontSize: '15px' }}>
+                            <FaClose />
+                          </span>
                         </button>
                       ) : (
                         <button
                           type="button"
-                          className="btn btn-sm btn-secondary">
-                          <FaChevronLeft />
-                          {` Connect`}
+                          className="btn btn-sm btn-secondary"
+                          onClick={() =>
+                            this.setState({
+                              linkingAccounts: {
+                                rightToLeft: true,
+                                accountToLink: account.debt_id
+                              }
+                            })
+                          }>
+                          <span style={{ fontSize: '13px' }}>
+                            <FaChevronLeft />
+                          </span>
+                          <span style={{ fontSize: '15px' }}>
+                            <FaChain />
+                          </span>
+                          <span> Link</span>
                         </button>
-                      )}{' '}
+                      )}
                     </td>
                     <td
                       className={
@@ -342,7 +499,7 @@ export default class Basic extends Component {
                       }>
                       {accounting.formatMoney(account.current_balance)}
                     </td>
-                    <td className="connectButtons"> </td>
+                    <td className="linkButtons"> </td>
                   </tr>
                 ))}
               <tr key="total">

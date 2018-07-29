@@ -116,6 +116,21 @@ export const updateYnoodAccountBalance = redux.action(
   'ynoodAccountUpdateResult'
 )
 
+export const linkYnoodAccountToYnabAccount = redux.action(
+  'UPDATE_YNOOD_account_linked_ynab_account',
+  async ({ http }, debtID, ynabAccountID) => {
+    const response = await http.get(
+      `/~api/v2/updateaccount?acct_id=${debtID}&element=ynab_id&value=${ynabAccountID}`
+    )
+    // console.log(response)
+    const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
+    const matchArray = regex.exec(response)
+    // console.log(matchArray)
+    return JSON.parse(matchArray[1])
+  },
+  'ynoodAccountUpdateResult'
+)
+
 // A little helper for Redux `@connect()`
 export const connectBudgets = redux.getProperties
 
