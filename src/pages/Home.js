@@ -197,7 +197,11 @@ export default class Basic extends Component {
               })
               .sort(
                 (account1, account2) =>
-                  account1.balance > account2.name ? -1 : 1
+                  account1.balance > account2.balance
+                    ? -1
+                    : account1.balance < account2.balance
+                      ? 1
+                      : 0
               )
               .map((account, index) => (
                 <tr
@@ -293,7 +297,11 @@ export default class Basic extends Component {
               {ynoodAccounts.data.accounts
                 .sort(
                   (account1, account2) =>
-                    account1.balance < account2.balance ? -1 : 1
+                    account1.current_balance > account2.current_balance
+                      ? -1
+                      : account1.current_balance < account2.current_balance
+                        ? 1
+                        : 0
                 )
                 .map((account, index) => (
                   <tr
