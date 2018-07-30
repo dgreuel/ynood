@@ -224,7 +224,7 @@ export default class Basic extends Component {
                   className={
                     (index % 2 === 0 ? 'greyBackground' : '') + ' balances'
                   }>
-                  <td className="linkButtons"> </td>
+                  <td className="leftLinkButtons"> </td>
                   <td
                     className={
                       (index % 2 === 0 ? 'greyBackground' : '') +
@@ -240,7 +240,8 @@ export default class Basic extends Component {
                   </td>
                   <td
                     className={
-                      (index % 2 === 0 ? 'greyBackground' : '') + ' linkButtons'
+                      (index % 2 === 0 ? 'greyBackground' : '') +
+                      ' leftLinkButtons'
                     }>
                     {this.isYnabAccountLinked.bind(this)(account.id) ? (
                       <button
@@ -389,7 +390,7 @@ export default class Basic extends Component {
                     <td
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
-                        ' linkButtons'
+                        ' rightLinkButtons'
                       }>
                       {this.isYnoodAccountLinked.bind(this)(account.debt_id) ? (
                         <button
@@ -498,7 +499,7 @@ export default class Basic extends Component {
                       }>
                       {accounting.formatMoney(account.current_balance)}
                     </td>
-                    <td className="linkButtons"> </td>
+                    <td className="rightLinkButtons"> </td>
                   </tr>
                 ))}
               <tr key="total">

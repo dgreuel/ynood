@@ -118,6 +118,16 @@
   font-size: 90%;
 }
 
+.leftLinkButtons {
+  padding-right: 40px;
+  text-align: center;
+}
+
+.rightLinkButtons {
+  padding-left: 40px;
+  text-align: center;
+}
+
 .YNABside {
   width: 75%;
   border: 1px solid #333;
