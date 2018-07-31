@@ -20,6 +20,7 @@ import FaChainBroken from 'react-icons/lib/fa/chain-broken'
 import FaChevronRight from 'react-icons/lib/fa/chevron-right'
 import FaChevronLeft from 'react-icons/lib/fa/chevron-left'
 import * as queryString from '../deps/query-string'
+import { DotLoader, BeatLoader } from 'react-spinners'
 
 @meta(() => ({
   title: 'Home!'
@@ -54,7 +55,12 @@ export default class Basic extends Component {
     fetchYNOODaccounts()
   }
   budgetPicker = () => {
-    const { budgets, fetchBudgetList } = this.props
+    const { budgets, fetchBudgetList, fetchBudgetsPending } = this.props
+
+    if (fetchBudgetsPending) {
+      return <BeatLoader align="center" color={'#248f87'} loading={true} />
+    }
+
     if (budgets && budgets.data && budgets.data.budgets) {
       return (
         <div className="budgetPickerDiv">
@@ -80,6 +86,7 @@ export default class Basic extends Component {
         </div>
       )
     }
+
     return 'no budgets available'
   }
   updateSelectedBudget = () => {
@@ -200,8 +207,17 @@ export default class Basic extends Component {
     const {
       YNABbudget,
       linkYnoodAccountToYnabAccount,
-      fetchYNOODaccounts
+      fetchYNOODaccounts,
+      fetchYnabBudgetPending
     } = this.props
+
+    if (fetchYnabBudgetPending) {
+      return (
+        <div className="spinner">
+          <DotLoader size={100} color={'#248f87'} loading={true} />
+        </div>
+      )
+    }
     if (YNABbudget && YNABbudget.data && YNABbudget.data.budget.accounts) {
       return (
         <table className="accountsTable">
@@ -365,8 +381,16 @@ export default class Basic extends Component {
     const {
       ynoodAccounts,
       linkYnoodAccountToYnabAccount,
-      fetchYNOODaccounts
+      fetchYNOODaccounts,
+      fetchYnoodAccountsPending
     } = this.props
+    if (fetchYnoodAccountsPending) {
+      return (
+        <div className="spinner">
+          <DotLoader size={100} color={'#248f87'} loading={true} />
+        </div>
+      )
+    }
     if (ynoodAccounts && ynoodAccounts.data && ynoodAccounts.data.accounts) {
       return (
         <div>
