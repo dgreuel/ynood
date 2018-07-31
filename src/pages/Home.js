@@ -572,7 +572,7 @@ export default class Basic extends Component {
                   '_blank'
                 )
               }}>
-              Log in to YNOOD
+              Visit YNOOD Site
             </button>
           </div>
           <div id="YNOODaccounts">{this.YNOODaccountList.bind(this)()}</div>
