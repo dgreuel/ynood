@@ -66,9 +66,28 @@
   text-decoration: underline;
 }
 
-.accountSummary {
+.accountSummaryLeft {
   text-align: right;
-  padding: 0px;
+  vertical-align: center;
+  margin: 10px;
+  width: 100%;
+  text-overflow: ellipsis;
+  padding-left: 20px;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.accountSummaryRight {
+  text-align: left;
+  vertical-align: center;
+  margin: 10px;
+  width: 100%;
+  text-overflow: ellipsis;
+  padding-left: 10px;
+  padding-right: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .greyBackground {
@@ -92,13 +111,26 @@
 
 .totalRow {
   font-weight: bold;
+  padding: 20px;
+  font-size: larger;
 }
 
-.balances {
+.total {
+  text-align: right;
+}
+
+.balancesLeft {
   width: 100px;
-  right: 5px;
-  margin: 0px;
-  padding: 2px;
+  margin: 15px;
+  padding: 10px;
+  text-align: right;
+}
+
+.balancesRight {
+  width: 100px;
+  margin: 15px;
+  padding: 10px;
+  text-align: left;
 }
 
 .accounts {
@@ -106,6 +138,7 @@
   display: inline-flex;
   align-content: center;
   width: 90%;
+  min-width: 850px;
 }
 
 .accounts h2 {
@@ -116,19 +149,25 @@
   width: 100%;
   background-color: white;
   font-size: 90%;
+  min-width: 400px;
 }
 
 .leftLinkButtons {
-  padding-right: 40px;
+  padding-right: 10px;
+  padding-left: 10px;
   text-align: center;
+  min-width: 120px;
 }
 
 .rightLinkButtons {
-  padding-left: 40px;
+  padding-left: 10px;
+  padding-right: 10px;
   text-align: center;
+  min-width: 120px;
 }
 
 .ynabSide {
+  min-width: 400px;
   width: 75%;
   border: 1px solid #333;
   margin: 1%;
@@ -137,19 +176,23 @@
 
 #ynabBudget {
   display: inline-block;
-  padding: 15px;
 }
 
 #ynoodAccounts {
   display: inline-block;
-  padding: 15px;
 }
 
 .ynoodSide {
+  min-width: 400px;
   width: 75%;
   border: 1px solid #333;
   margin: 1%;
   background-color: rgba(212, 242, 242, 0.27);
+}
+
+#dashboard {
+  padding: 15px;
+  font-style: italic;
 }
 
 .connectButtons {
@@ -166,6 +209,11 @@
   margin-bottom: 20px;
   font-weight: 600;
   padding: 0px;
+}
+
+.logout {
+  text-align: right;
+  margin: 10px;
 }
 
 .spinner {
