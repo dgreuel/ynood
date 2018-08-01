@@ -2,9 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { meta } from 'react-website'
 import {
+  fetchYNABuser,
   fetchBudgetList,
   fetchBudget,
   connectBudgets,
+  registerYNOODuser,
+  deleteYNOODuser,
+  fetchYNOODuser,
   fetchYNOODaccounts,
   updateYnoodAccountBalance,
   linkYnoodAccountToYnabAccount
@@ -32,7 +36,11 @@ import { DotLoader, BeatLoader } from 'react-spinners'
     fetchBudget,
     fetchYNOODaccounts,
     updateYnoodAccountBalance,
-    linkYnoodAccountToYnabAccount
+    linkYnoodAccountToYnabAccount,
+    fetchYNABuser,
+    fetchYNOODuser,
+    registerYNOODuser,
+    deleteYNOODuser
   }
 )
 export default class Basic extends Component {
@@ -44,15 +52,112 @@ export default class Basic extends Component {
         leftToRight: false,
         rightToLeft: false,
         accountToLink: ''
-      }
+      },
+      ynabToken: this.findYNABToken()
     }
   }
   componentDidMount() {
-    const { fetchBudgetList, fetchBudget, fetchYNOODaccounts } = this.props
-    fetchBudgetList().then(result => {
-      fetchBudget(result.data.budgets[0].id)
-    })
-    fetchYNOODaccounts()
+    const {
+      fetchYNABuser,
+      fetchBudgetList,
+      fetchBudget,
+      fetchYNOODaccounts,
+      registerYNOODuser,
+      deleteYNOODuser,
+      fetchYNOODuser
+    } = this.props
+
+    if (this.state.ynabToken) {
+      let ynabID = null
+      fetchYNABuser()
+        .then(result => {
+          if (result && result.data && result.data.user) {
+            ynabID = result.data.user.id
+            return fetchYNOODuser(ynabID)
+          } else {
+            throw new Error('unable to fetch user')
+          }
+        })
+        .then(result => {
+          if (result && result.undebt_user_id) {
+            fetchYNOODaccounts(result.undebt_user_id)
+          } else {
+            const email = `test-${ynabID.substring(0, 10)}@test.com`
+            localStorage.setItem('ynoodUserEmail', email)
+            return registerYNOODuser(email, ynabID)
+              .then(result => {
+                if (result && result.userExists) {
+                  throw new Error('user exists already')
+                }
+                if (result && result.newUser && !result.newUser.success) {
+                  throw new Error('error creating user')
+                }
+                if (result && result.newUser) {
+                  console.log(`new user: ${JSON.stringify(result.newUser)}`)
+                  localStorage.setItem(
+                    'ynoodUser',
+                    JSON.stringify(result.newUser)
+                  )
+                  fetchYNOODuser(ynabID)
+                  fetchYNOODaccounts(this.props.ynabUser.undebt_user_id)
+                }
+              })
+              .catch(err => {
+                console.log(err)
+                // if (err.message === 'user exists already') {
+                //   deleteYNOODuser(ynabID).then(response => {
+                //     if (response.success) {
+                //       console.log(`deleted user ${ynabID}`)
+                //     } else {
+                //       console.log('couldnt delete user')
+                //     }
+                //   })
+                // }
+              })
+          }
+        })
+
+      fetchBudgetList().then(result => {
+        fetchBudget(result.data.budgets[0].id)
+      })
+    }
+  }
+  authorizeWithYNAB(e) {
+    e.preventDefault()
+    const uri = `https://app.youneedabudget.com/oauth/authorize?client_id=${
+      process.env.REACT_APP_ynabClientID
+    }&redirect_uri=${
+      process.env[`REACT_APP_ynabRedirectURI_${process.env.NODE_ENV}`]
+    }&response_type=token`
+    window.location.replace(uri)
+  }
+
+  // Method to find a YNAB token
+  // First it looks in the location.hash and then sessionStorage
+  findYNABToken() {
+    let token = null
+    const search = window.location.hash
+      .substring(1)
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+    if (search && search !== '') {
+      // Try to get access_token from the hash returned by OAuth
+      const params = JSON.parse('{"' + search + '"}', function(key, value) {
+        return key === '' ? value : decodeURIComponent(value)
+      })
+      token = params.access_token
+      sessionStorage.setItem('ynab_access_token', token)
+      window.location.hash = ''
+    } else {
+      // Otherwise try sessionStorage
+      token = sessionStorage.getItem('ynab_access_token')
+    }
+    return token
+  }
+  // Clear the token and start authorization over
+  resetToken() {
+    sessionStorage.removeItem('ynab_access_token')
+    this.setState({ ynabToken: null })
   }
   budgetPicker = () => {
     const { budgets, fetchBudgetList, fetchBudgetsPending } = this.props
@@ -177,7 +282,8 @@ export default class Basic extends Component {
       ynoodAccounts,
       YNABbudget,
       updateYnoodAccountBalance,
-      fetchYNOODaccounts
+      fetchYNOODaccounts,
+      ynoodUser
     } = this.props
     if (ynoodAccounts && ynoodAccounts.data) {
       const ynabAccount = _.find(
@@ -190,12 +296,13 @@ export default class Basic extends Component {
       )
       const linkedYnoodAccountID = linkedYnoodAccount.debt_id
       updateYnoodAccountBalance(
+        ynoodUser.undebt_user_id,
         linkedYnoodAccountID,
         ynabAccount.balance / -1000
       ).then(result => {
         // console.log(result)
         if (result.rows_affected === 1) {
-          fetchYNOODaccounts()
+          fetchYNOODaccounts(ynoodUser.undebt_user_id)
         } else {
           console.log('no change was made')
         }
@@ -208,7 +315,8 @@ export default class Basic extends Component {
       YNABbudget,
       linkYnoodAccountToYnabAccount,
       fetchYNOODaccounts,
-      fetchYnabBudgetPending
+      fetchYnabBudgetPending,
+      ynoodUser
     } = this.props
 
     if (fetchYnabBudgetPending) {
@@ -293,11 +401,12 @@ export default class Basic extends Component {
                         className="btn btn-sm btn-info shaky"
                         onClick={() => {
                           linkYnoodAccountToYnabAccount(
+                            ynoodUser.undebt_user_id,
                             this.state.linkingAccounts.accountToLink,
                             account.id
                           ).then(result => {
                             if (result.rows_affected === 1) {
-                              fetchYNOODaccounts()
+                              fetchYNOODaccounts(ynoodUser.undebt_user_id)
                             } else {
                               alert('could not link accounts')
                             }
@@ -382,7 +491,8 @@ export default class Basic extends Component {
       ynoodAccounts,
       linkYnoodAccountToYnabAccount,
       fetchYNOODaccounts,
-      fetchYnoodAccountsPending
+      fetchYnoodAccountsPending,
+      ynoodUser
     } = this.props
     if (fetchYnoodAccountsPending) {
       return (
@@ -422,11 +532,12 @@ export default class Basic extends Component {
                           className="btn btn-sm btn-elegant"
                           onClick={() => {
                             linkYnoodAccountToYnabAccount(
+                              ynoodUser.undebt_user_id,
                               account.debt_id,
                               '%00' //URL-encoded null
                             ).then(result => {
                               if (result.rows_affected === 1) {
-                                fetchYNOODaccounts()
+                                fetchYNOODaccounts(ynoodUser.undebt_user_id)
                               } else {
                                 alert('could not unlink accounts')
                               }
@@ -450,11 +561,12 @@ export default class Basic extends Component {
                           className="btn btn-sm btn-info shaky"
                           onClick={() => {
                             linkYnoodAccountToYnabAccount(
+                              ynoodUser.undebt_user_id,
                               account.debt_id,
                               this.state.linkingAccounts.accountToLink
                             ).then(result => {
                               if (result.rows_affected === 1) {
-                                fetchYNOODaccounts()
+                                fetchYNOODaccounts(ynoodUser.undebt_user_id)
                               } else {
                                 alert('could not link accounts')
                               }
@@ -551,8 +663,15 @@ export default class Basic extends Component {
         <div className="YNABside">
           <h2>YNAB Debt Accounts</h2>
           <div>{this.budgetPicker.bind(this)()}</div>
-
-          <div id="YNABbudget">{this.YNABaccountList.bind(this)()}</div>
+          {!this.state.ynabToken ? (
+            <button
+              className="btn btn-lg btn-default"
+              onClick={this.authorizeWithYNAB.bind(this)}>
+              Connect your YNAB account
+            </button>
+          ) : (
+            <div id="YNABbudget">{this.YNABaccountList.bind(this)()}</div>
+          )}
         </div>
         <div className="YNOODside">
           <h2>YNOOD Accounts</h2>
@@ -560,10 +679,15 @@ export default class Basic extends Component {
             <button
               className="btn btn-sm btn-primary"
               onClick={() => {
+                const userKeys = JSON.parse(localStorage.getItem('ynoodUser'))
+                const { verify_key, uniqueID } = userKeys
                 const query = queryString.stringify({
-                  email: process.env.REACT_APP_ynoodUserEmail,
-                  verify_key: process.env.REACT_APP_ynoodUserVerifyKey,
-                  user_key: process.env.REACT_APP_ynoodUniqueID,
+                  email:
+                    localStorage.getItem('ynoodUserEmail') ||
+                    process.env.REACT_APP_ynoodUserEmail,
+                  verify_key:
+                    verify_key || process.env.REACT_APP_ynoodUserVerifyKey,
+                  user_key: uniqueID || process.env.REACT_APP_ynoodUniqueID,
                   key: process.env.REACT_APP_ynoodAppKey,
                   verify: process.env.REACT_APP_ynoodVerifyString
                 })

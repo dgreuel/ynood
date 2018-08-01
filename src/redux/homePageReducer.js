@@ -2,14 +2,21 @@ import { reduxModule } from 'react-website'
 import * as _ from 'lodash'
 const redux = reduxModule('budgets')
 
+export const fetchYNABuser = redux.action(
+  'FETCH_YNAB_user',
+  async ({ http }) => {
+    return await http.get('/user')
+  },
+  'ynabUser'
+)
 export const fetchBudgetList = redux.action(
   'FETCH_Budgets',
   async ({ http }) => {
     const allBudgets = await http.get(`/budgets`)
-    const testBudget = _.filter(allBudgets.data.budgets, budget => {
-      return budget.name === 'test'
+    const filteredBudgets = _.filter(allBudgets.data.budgets, budget => {
+      return true // return budget.name === 'test'
     })
-    return { data: { budgets: testBudget } }
+    return { data: { budgets: filteredBudgets } }
   },
   // The fetched budget list will be placed
   // into the `budgets` Redux state property.
@@ -88,48 +95,75 @@ export const fetchBudget = redux.action(
   }
 )
 
+export const fetchYNOODuser = redux.action(
+  'FETCH_YNOOD_user',
+  async ({ http }, ynabID) => {
+    const response = await http.get(`/~api/v2/getuser?id=${ynabID}`)
+    return stripPreTags(response).info[0]
+  },
+  'ynoodUser'
+)
+
+export const registerYNOODuser = redux.action(
+  'REGISTER_YNOOD_user',
+  async ({ http }, email, ynabID) => {
+    const response = await http.get(
+      `/~api/v2/register?email=${email}&cust_id=${ynabID}`
+    )
+    return stripPreTags(response)
+  },
+  'registeredYnoodUser'
+)
+
+export const deleteYNOODuser = redux.action(
+  'DELETE_YNOOD_user',
+  async ({ http }, ynabID) => {
+    const response = await http.get(`/~api/v2/deleteuser?id=${ynabID}`)
+    return stripPreTags(response)
+  },
+  'deletedYnoodUser'
+)
+
 export const fetchYNOODaccounts = redux.action(
   'FETCH_YNOOD_accounts',
-  async ({ http }) => {
-    const response = await http.get(`/~api/v2/getaccounts`)
+  async ({ http }, undebtID) => {
+    const response = await http.get(`/~api/v2/getaccounts?id=${undebtID}`)
     // console.log(response)
-    const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
-    const matchArray = regex.exec(response)
-    // console.log(matchArray)
-    return JSON.parse(matchArray[1])
+    return stripPreTags(response)
   },
   'ynoodAccounts'
 )
 
 export const updateYnoodAccountBalance = redux.action(
   'UPDATE_YNOOD_account_balance',
-  async ({ http }, debtID, balance) => {
+  async ({ http }, undebtID, debtID, balance) => {
     const response = await http.get(
-      `/~api/v2/updateaccount?acct_id=${debtID}&element=balance&value=${balance}`
+      `/~api/v2/updateaccount?id=${undebtID}&acct_id=${debtID}&element=balance&value=${balance}`
     )
     // console.log(response)
-    const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
-    const matchArray = regex.exec(response)
-    // console.log(matchArray)
-    return JSON.parse(matchArray[1])
+    return stripPreTags(response)
   },
   'ynoodAccountUpdateResult'
 )
 
 export const linkYnoodAccountToYnabAccount = redux.action(
   'UPDATE_YNOOD_account_linked_ynab_account',
-  async ({ http }, debtID, ynabAccountID) => {
+  async ({ http }, undebtID, debtID, ynabAccountID) => {
     const response = await http.get(
-      `/~api/v2/updateaccount?acct_id=${debtID}&element=ynab_id&value=${ynabAccountID}`
+      `/~api/v2/updateaccount?id=${undebtID}&acct_id=${debtID}&element=ynab_id&value=${ynabAccountID}`
     )
     // console.log(response)
-    const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
-    const matchArray = regex.exec(response)
-    // console.log(matchArray)
-    return JSON.parse(matchArray[1])
+    return stripPreTags(response)
   },
   'ynoodAccountUpdateResult'
 )
+
+const stripPreTags = response => {
+  const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
+  const matchArray = regex.exec(response)
+  // console.log(matchArray)
+  return JSON.parse(matchArray[1])
+}
 
 // A little helper for Redux `@connect()`
 export const connectBudgets = redux.getProperties
@@ -138,7 +172,11 @@ const initialState = {
   budgets: {},
   YNABbudget: {},
   ynoodAccounts: {},
-  updatedYnoodAccount: {}
+  updatedYnoodAccount: {},
+  ynabUser: {},
+  ynoodUser: {},
+  registeredYnoodUser: {},
+  deletedYnoodUser: {}
 }
 
 // This is the Redux reducer which now

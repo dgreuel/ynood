@@ -17,7 +17,7 @@ export default {
         const parsedUrl = queryString.parseUrl(
           `${process.env.REACT_APP_ynoodProxyURL}https://undebt.it${path}` //pass requests through a proxy to add CORS headers
         )
-        parsedUrl.query.id = process.env.REACT_APP_ynoodUserID
+        //parsedUrl.query.id = process.env.REACT_APP_ynoodUserID
         parsedUrl.query.key = process.env.REACT_APP_ynoodAppKey
         parsedUrl.query.verify = process.env.REACT_APP_ynoodVerifyString
         return `${parsedUrl.url}?${queryString.stringify(parsedUrl.query)}`
