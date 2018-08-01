@@ -2,15 +2,15 @@ import { reduxModule } from 'react-website'
 import * as _ from 'lodash'
 const redux = reduxModule('budgets')
 
-export const fetchYNABuser = redux.action(
-  'FETCH_YNAB_user',
+export const fetchYnabUser = redux.action(
+  'FETCH_YNAB_USER',
   async ({ http }) => {
     return await http.get('/user')
   },
   'ynabUser'
 )
 export const fetchBudgetList = redux.action(
-  'FETCH_Budgets',
+  'FETCH_BUDGETS',
   async ({ http }) => {
     const allBudgets = await http.get(`/budgets`)
     const filteredBudgets = _.filter(allBudgets.data.budgets, budget => {
@@ -31,10 +31,10 @@ export const fetchBudgetList = redux.action(
   // (state, result) => ({ ...state, Budgets: result })
 )
 export const fetchBudget = redux.action(
-  'FETCH_YNAB_budget',
+  'FETCH_YNAB_BUDGET',
   async ({ http }, budgetID, serverKnowledge) => {
     if (!serverKnowledge) {
-      const existingBudgets = JSON.parse(localStorage.getItem('YNABbudgets'))
+      const existingBudgets = JSON.parse(localStorage.getItem('ynabBudgets'))
       if (existingBudgets && existingBudgets[budgetID]) {
         serverKnowledge = existingBudgets[budgetID].data.server_knowledge
       }
@@ -49,10 +49,10 @@ export const fetchBudget = redux.action(
   },
 
   {
-    YNABbudget: result => {
+    ynabBudget: result => {
       // console.log(result)
-      const cachedBudgets = JSON.parse(localStorage.getItem('YNABbudgets'))
-        ? JSON.parse(localStorage.getItem('YNABbudgets'))
+      const cachedBudgets = JSON.parse(localStorage.getItem('ynabBudgets'))
+        ? JSON.parse(localStorage.getItem('ynabBudgets'))
         : {}
       const existingBudget =
         cachedBudgets && cachedBudgets[result.data.budget.id]
@@ -88,15 +88,15 @@ export const fetchBudget = redux.action(
       if (updatedBudget) {
         const newCachedBudgets = Object.assign({}, cachedBudgets)
         newCachedBudgets[result.data.budget.id] = updatedBudget
-        localStorage.setItem('YNABbudgets', JSON.stringify(newCachedBudgets))
+        localStorage.setItem('ynabBudgets', JSON.stringify(newCachedBudgets))
       }
       return updatedBudget
     }
   }
 )
 
-export const fetchYNOODuser = redux.action(
-  'FETCH_YNOOD_user',
+export const fetchYnoodUser = redux.action(
+  'FETCH_YNOOD_USER',
   async ({ http }, ynabID) => {
     const response = await http.get(`/~api/v2/getuser?id=${ynabID}`)
     return stripPreTags(response).info[0]
@@ -104,8 +104,8 @@ export const fetchYNOODuser = redux.action(
   'ynoodUser'
 )
 
-export const registerYNOODuser = redux.action(
-  'REGISTER_YNOOD_user',
+export const registerYnoodUser = redux.action(
+  'REGISTER_YNOOD_USER',
   async ({ http }, email, ynabID) => {
     const response = await http.get(
       `/~api/v2/register?email=${email}&cust_id=${ynabID}`
@@ -115,8 +115,8 @@ export const registerYNOODuser = redux.action(
   'registeredYnoodUser'
 )
 
-export const deleteYNOODuser = redux.action(
-  'DELETE_YNOOD_user',
+export const deleteYnoodUser = redux.action(
+  'DELETE_YNOOD_USER',
   async ({ http }, ynabID) => {
     const response = await http.get(`/~api/v2/deleteuser?id=${ynabID}`)
     return stripPreTags(response)
@@ -124,8 +124,8 @@ export const deleteYNOODuser = redux.action(
   'deletedYnoodUser'
 )
 
-export const fetchYNOODaccounts = redux.action(
-  'FETCH_YNOOD_accounts',
+export const fetchYnoodAccounts = redux.action(
+  'FETCH_YNOOD_ACCOUNTS',
   async ({ http }, undebtID) => {
     const response = await http.get(`/~api/v2/getaccounts?id=${undebtID}`)
     // console.log(response)
@@ -135,7 +135,7 @@ export const fetchYNOODaccounts = redux.action(
 )
 
 export const updateYnoodAccountBalance = redux.action(
-  'UPDATE_YNOOD_account_balance',
+  'UPDATE_YNOOD_ACCOUNT_BALANCE',
   async ({ http }, undebtID, debtID, balance) => {
     const response = await http.get(
       `/~api/v2/updateaccount?id=${undebtID}&acct_id=${debtID}&element=balance&value=${balance}`
@@ -147,7 +147,7 @@ export const updateYnoodAccountBalance = redux.action(
 )
 
 export const linkYnoodAccountToYnabAccount = redux.action(
-  'UPDATE_YNOOD_account_linked_ynab_account',
+  'UPDATE_YNOOD_ACCOUNT_LINKED_YNAB_ACCOUNT',
   async ({ http }, undebtID, debtID, ynabAccountID) => {
     const response = await http.get(
       `/~api/v2/updateaccount?id=${undebtID}&acct_id=${debtID}&element=ynab_id&value=${ynabAccountID}`
@@ -170,7 +170,7 @@ export const connectBudgets = redux.getProperties
 
 const initialState = {
   budgets: {},
-  YNABbudget: {},
+  ynabBudget: {},
   ynoodAccounts: {},
   updatedYnoodAccount: {},
   ynabUser: {},

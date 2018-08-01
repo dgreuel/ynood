@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { meta } from 'react-website'
 import {
-  fetchYNABuser,
+  fetchYnabUser,
   fetchBudgetList,
   fetchBudget,
   connectBudgets,
-  registerYNOODuser,
-  deleteYNOODuser,
-  fetchYNOODuser,
-  fetchYNOODaccounts,
+  registerYnoodUser,
+  deleteYnoodUser,
+  fetchYnoodUser,
+  fetchYnoodAccounts,
   updateYnoodAccountBalance,
   linkYnoodAccountToYnabAccount
 } from '../redux/homePageReducer'
@@ -34,13 +34,13 @@ import { DotLoader, BeatLoader } from 'react-spinners'
   {
     fetchBudgetList,
     fetchBudget,
-    fetchYNOODaccounts,
+    fetchYnoodAccounts,
     updateYnoodAccountBalance,
     linkYnoodAccountToYnabAccount,
-    fetchYNABuser,
-    fetchYNOODuser,
-    registerYNOODuser,
-    deleteYNOODuser
+    fetchYnabUser,
+    fetchYnoodUser,
+    registerYnoodUser,
+    deleteYnoodUser
   }
 )
 export default class Basic extends Component {
@@ -53,38 +53,38 @@ export default class Basic extends Component {
         rightToLeft: false,
         accountToLink: ''
       },
-      ynabToken: this.findYNABToken()
+      ynabToken: this.findYnabToken()
     }
   }
   componentDidMount() {
     const {
-      fetchYNABuser,
+      fetchYnabUser,
       fetchBudgetList,
       fetchBudget,
-      fetchYNOODaccounts,
-      registerYNOODuser,
-      deleteYNOODuser,
-      fetchYNOODuser
+      fetchYnoodAccounts,
+      registerYnoodUser,
+      //deleteYnoodUser,
+      fetchYnoodUser
     } = this.props
 
     if (this.state.ynabToken) {
       let ynabID = null
-      fetchYNABuser()
+      fetchYnabUser()
         .then(result => {
           if (result && result.data && result.data.user) {
             ynabID = result.data.user.id
-            return fetchYNOODuser(ynabID)
+            return fetchYnoodUser(ynabID)
           } else {
             throw new Error('unable to fetch user')
           }
         })
         .then(result => {
           if (result && result.undebt_user_id) {
-            fetchYNOODaccounts(result.undebt_user_id)
+            fetchYnoodAccounts(result.undebt_user_id)
           } else {
             const email = `test-${ynabID.substring(0, 10)}@test.com`
             localStorage.setItem('ynoodUserEmail', email)
-            return registerYNOODuser(email, ynabID)
+            return registerYnoodUser(email, ynabID)
               .then(result => {
                 if (result && result.userExists) {
                   throw new Error('user exists already')
@@ -98,14 +98,14 @@ export default class Basic extends Component {
                     'ynoodUser',
                     JSON.stringify(result.newUser)
                   )
-                  fetchYNOODuser(ynabID)
-                  fetchYNOODaccounts(this.props.ynabUser.undebt_user_id)
+                  fetchYnoodUser(ynabID)
+                  fetchYnoodAccounts(this.props.ynabUser.undebt_user_id)
                 }
               })
               .catch(err => {
                 console.log(err)
                 // if (err.message === 'user exists already') {
-                //   deleteYNOODuser(ynabID).then(response => {
+                //   deleteYnoodUser(ynabID).then(response => {
                 //     if (response.success) {
                 //       console.log(`deleted user ${ynabID}`)
                 //     } else {
@@ -122,7 +122,7 @@ export default class Basic extends Component {
       })
     }
   }
-  authorizeWithYNAB(e) {
+  authorizeWithYnab(e) {
     e.preventDefault()
     const uri = `https://app.youneedabudget.com/oauth/authorize?client_id=${
       process.env.REACT_APP_ynabClientID
@@ -134,7 +134,7 @@ export default class Basic extends Component {
 
   // Method to find a YNAB token
   // First it looks in the location.hash and then sessionStorage
-  findYNABToken() {
+  findYnabToken() {
     let token = null
     const search = window.location.hash
       .substring(1)
@@ -195,16 +195,16 @@ export default class Basic extends Component {
     return 'no budgets available'
   }
   updateSelectedBudget = () => {
-    const { fetchBudget, YNABbudget } = this.props
+    const { fetchBudget, ynabBudget } = this.props
     const selection = document.getElementById('budgetPicker').value
     this.setState({
       selectedBudget: selection
     })
-    if (YNABbudget) {
+    if (ynabBudget) {
       console.log(`getting accounts for ${selection}`)
       console.log(
-        `${YNABbudget.data.budget.id ? YNABbudget.data.budget.id : '-'} (${
-          YNABbudget.data.budget.name ? YNABbudget.data.budget.name : ''
+        `${ynabBudget.data.budget.id ? ynabBudget.data.budget.id : '-'} (${
+          ynabBudget.data.budget.name ? ynabBudget.data.budget.name : ''
         })`
       )
     }
@@ -235,9 +235,9 @@ export default class Basic extends Component {
 
   isYnabAccountSynced = id => {
     // console.log('checking if Linked')
-    const { ynoodAccounts, YNABbudget } = this.props
+    const { ynoodAccounts, ynabBudget } = this.props
     const ynabAccount = _.find(
-      YNABbudget.data.budget.accounts,
+      ynabBudget.data.budget.accounts,
       account => account.id === id
     )
     let balance = null
@@ -258,8 +258,8 @@ export default class Basic extends Component {
   }
 
   isYnoodAccountLinked = id => {
-    const { ynoodAccounts, YNABbudget } = this.props
-    if (ynoodAccounts && ynoodAccounts.data && YNABbudget && YNABbudget.data) {
+    const { ynoodAccounts, ynabBudget } = this.props
+    if (ynoodAccounts && ynoodAccounts.data && ynabBudget && ynabBudget.data) {
       const ynabGuid = _.find(
         ynoodAccounts.data.accounts,
         account => account.debt_id === id
@@ -268,7 +268,7 @@ export default class Basic extends Component {
         ynabGuid === undefined ||
         ynabGuid === '\u0000' ||
         _.find(
-          YNABbudget.data.budget.accounts,
+          ynabBudget.data.budget.accounts,
           account => account.id === ynabGuid
         ) === null
         ? false
@@ -280,14 +280,14 @@ export default class Basic extends Component {
     // console.log(`syncing ynab account: ${id}`)
     const {
       ynoodAccounts,
-      YNABbudget,
+      ynabBudget,
       updateYnoodAccountBalance,
-      fetchYNOODaccounts,
+      fetchYnoodAccounts,
       ynoodUser
     } = this.props
     if (ynoodAccounts && ynoodAccounts.data) {
       const ynabAccount = _.find(
-        YNABbudget.data.budget.accounts,
+        ynabBudget.data.budget.accounts,
         account => account.id === id
       )
       const linkedYnoodAccount = _.find(
@@ -302,7 +302,7 @@ export default class Basic extends Component {
       ).then(result => {
         // console.log(result)
         if (result.rows_affected === 1) {
-          fetchYNOODaccounts(ynoodUser.undebt_user_id)
+          fetchYnoodAccounts(ynoodUser.undebt_user_id)
         } else {
           console.log('no change was made')
         }
@@ -310,11 +310,11 @@ export default class Basic extends Component {
     }
   }
 
-  YNABaccountList = () => {
+  ynabAccountList = () => {
     const {
-      YNABbudget,
+      ynabBudget,
       linkYnoodAccountToYnabAccount,
-      fetchYNOODaccounts,
+      fetchYnoodAccounts,
       fetchYnabBudgetPending,
       ynoodUser
     } = this.props
@@ -326,11 +326,11 @@ export default class Basic extends Component {
         </div>
       )
     }
-    if (YNABbudget && YNABbudget.data && YNABbudget.data.budget.accounts) {
+    if (ynabBudget && ynabBudget.data && ynabBudget.data.budget.accounts) {
       return (
         <table className="accountsTable">
           <tbody>
-            {YNABbudget.data.budget.accounts
+            {ynabBudget.data.budget.accounts
               .filter(account => {
                 return this.isDebtAccount(account)
               })
@@ -406,7 +406,7 @@ export default class Basic extends Component {
                             account.id
                           ).then(result => {
                             if (result.rows_affected === 1) {
-                              fetchYNOODaccounts(ynoodUser.undebt_user_id)
+                              fetchYnoodAccounts(ynoodUser.undebt_user_id)
                             } else {
                               alert('could not link accounts')
                             }
@@ -470,7 +470,7 @@ export default class Basic extends Component {
               </td>
               <td className="totalRow">
                 {accounting.formatMoney(
-                  YNABbudget.data.budget.accounts
+                  ynabBudget.data.budget.accounts
                     .filter(account => {
                       return this.isDebtAccount(account)
                     })
@@ -486,11 +486,11 @@ export default class Basic extends Component {
     }
     return 'select a budget to list accounts'
   }
-  YNOODaccountList = () => {
+  YnoodAccountList = () => {
     const {
       ynoodAccounts,
       linkYnoodAccountToYnabAccount,
-      fetchYNOODaccounts,
+      fetchYnoodAccounts,
       fetchYnoodAccountsPending,
       ynoodUser
     } = this.props
@@ -537,7 +537,7 @@ export default class Basic extends Component {
                               '%00' //URL-encoded null
                             ).then(result => {
                               if (result.rows_affected === 1) {
-                                fetchYNOODaccounts(ynoodUser.undebt_user_id)
+                                fetchYnoodAccounts(ynoodUser.undebt_user_id)
                               } else {
                                 alert('could not unlink accounts')
                               }
@@ -566,7 +566,7 @@ export default class Basic extends Component {
                               this.state.linkingAccounts.accountToLink
                             ).then(result => {
                               if (result.rows_affected === 1) {
-                                fetchYNOODaccounts(ynoodUser.undebt_user_id)
+                                fetchYnoodAccounts(ynoodUser.undebt_user_id)
                               } else {
                                 alert('could not link accounts')
                               }
@@ -660,20 +660,20 @@ export default class Basic extends Component {
   render() {
     return (
       <div className="accounts">
-        <div className="YNABside">
+        <div className="ynabSide">
           <h2>YNAB Debt Accounts</h2>
           <div>{this.budgetPicker.bind(this)()}</div>
           {!this.state.ynabToken ? (
             <button
               className="btn btn-lg btn-default"
-              onClick={this.authorizeWithYNAB.bind(this)}>
+              onClick={this.authorizeWithYnab.bind(this)}>
               Connect your YNAB account
             </button>
           ) : (
-            <div id="YNABbudget">{this.YNABaccountList.bind(this)()}</div>
+            <div id="ynabBudget">{this.ynabAccountList.bind(this)()}</div>
           )}
         </div>
-        <div className="YNOODside">
+        <div className="ynoodSide">
           <h2>YNOOD Accounts</h2>
           <div className="login">
             <button
@@ -699,7 +699,7 @@ export default class Basic extends Component {
               Visit YNOOD Site
             </button>
           </div>
-          <div id="YNOODaccounts">{this.YNOODaccountList.bind(this)()}</div>
+          <div id="ynoodAccounts">{this.YnoodAccountList.bind(this)()}</div>
         </div>
       </div>
     )

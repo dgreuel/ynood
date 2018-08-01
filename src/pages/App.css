@@ -128,24 +128,24 @@
   text-align: center;
 }
 
-.YNABside {
+.ynabSide {
   width: 75%;
   border: 1px solid #333;
   margin: 1%;
   background-color: rgba(212, 242, 242, 0.27);
 }
 
-#YNABbudget {
+#ynabBudget {
   display: inline-block;
   padding: 15px;
 }
 
-#YNOODaccounts {
+#ynoodAccounts {
   display: inline-block;
   padding: 15px;
 }
 
-.YNOODside {
+.ynoodSide {
   width: 75%;
   border: 1px solid #333;
   margin: 1%;
