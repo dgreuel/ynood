@@ -326,7 +326,8 @@ export default class Basic extends Component {
       fetchYnabBudgetPending,
       ynoodUser,
       setHoveredOverAccount,
-      hoveredOverAccount
+      hoveredOverAccount,
+      ynoodAccounts
     } = this.props
 
     if (fetchYnabBudgetPending) {
@@ -336,7 +337,12 @@ export default class Basic extends Component {
         </div>
       )
     }
-    if (ynabBudget && ynabBudget.data && ynabBudget.data.budget.accounts) {
+    if (
+      ynabBudget &&
+      ynabBudget.data &&
+      ynabBudget.data.budget.accounts &&
+      ynoodAccounts
+    ) {
       return (
         <div>
           <table className="accountsTable">
@@ -345,16 +351,43 @@ export default class Basic extends Component {
                 .filter(account => {
                   return this.isDebtAccount(account)
                 })
-                .sort(
-                  (account1, account2) =>
-                    account1.balance > account2.balance
-                      ? -1
-                      : account1.balance < account2.balance
+                .sort((account1, account2) => {
+                  console.log(ynoodAccounts)
+                  const linkedAccount1 = ynoodAccounts.data
+                    ? _.find(
+                        ynoodAccounts.data.accounts,
+                        ynoodAccount => ynoodAccount.ynab_guid === account1.id
+                      )
+                    : null
+                  const linkedAccount2 = ynoodAccounts.data
+                    ? _.find(
+                        ynoodAccounts.data.accounts,
+                        ynoodAccount => ynoodAccount.ynab_guid === account2.id
+                      )
+                    : null
+                  const payOffDate1 = linkedAccount1
+                    ? moment(linkedAccount1.scheduled_payoff_date)
+                    : null
+                  const payOffDate2 = linkedAccount2
+                    ? moment(linkedAccount2.scheduled_payoff_date)
+                    : null
+
+                  return payOffDate1 && !payOffDate2
+                    ? -1
+                    : payOffDate2 && !payOffDate1
+                      ? 1
+                      : payOffDate1 &&
+                        payOffDate2 &&
+                        payOffDate1.isAfter(payOffDate2)
                         ? 1
-                        : account1.name > account2.name
+                        : payOffDate1 &&
+                          payOffDate2 &&
+                          payOffDate1.isBefore(payOffDate2)
                           ? -1
-                          : 1
-                )
+                          : account1.balance < account2.balance
+                            ? 1
+                            : -1
+                })
                 .map((account, index) => (
                   <tr
                     key={account.id}
