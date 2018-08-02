@@ -127,7 +127,9 @@ export const deleteYnoodUser = redux.action(
 export const fetchYnoodAccounts = redux.action(
   'FETCH_YNOOD_ACCOUNTS',
   async ({ http }, undebtID) => {
-    const response = await http.get(`/~api/v3/getaccounts?id=${undebtID}`)
+    const response = await http.get(
+      `/~api/v3/getaccounts?id=${undebtID}&active=true`
+    )
     // console.log(response)
     return JSON.parse(response)
   },
