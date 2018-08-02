@@ -522,9 +522,39 @@ export default class Basic extends Component {
                 ))}
               <tr key="total">
                 <td colSpan={2} className="total">
+                  Linked:<br />
+                  Unlinked:<br />
                   Total:
                 </td>
                 <td className="totalRow">
+                  <span style={{ fontWeight: 'normal' }}>
+                    {accounting.formatMoney(
+                      ynabBudget.data.budget.accounts
+                        .filter(account => {
+                          return (
+                            this.isDebtAccount(account) &&
+                            this.isYnabAccountLinked(account.id)
+                          )
+                        })
+                        .reduce((acc, curr) => {
+                          return acc + curr.balance
+                        }, 0) / 1000
+                    )}
+                    <br />
+                    {accounting.formatMoney(
+                      ynabBudget.data.budget.accounts
+                        .filter(account => {
+                          return (
+                            this.isDebtAccount(account) &&
+                            !this.isYnabAccountLinked(account.id)
+                          )
+                        })
+                        .reduce((acc, curr) => {
+                          return acc + curr.balance
+                        }, 0) / 1000
+                    )}
+                    <br />{' '}
+                  </span>
                   {accounting.formatMoney(
                     ynabBudget.data.budget.accounts
                       .filter(account => {
@@ -714,9 +744,33 @@ export default class Basic extends Component {
                 ))}
               <tr key="total">
                 <td colSpan={2} className="total">
+                  Linked:<br />
+                  Unlinked:<br />
                   Total:
                 </td>
                 <td className="totalRow">
+                  <span style={{ fontWeight: 'normal' }}>
+                    {accounting.formatMoney(
+                      ynoodAccounts.data.accounts
+                        .filter(account =>
+                          this.isYnoodAccountLinked(account.debt_id)
+                        )
+                        .reduce((acc, curr) => {
+                          return acc + curr.current_balance
+                        }, 0)
+                    )}
+                    <br />
+                    {accounting.formatMoney(
+                      ynoodAccounts.data.accounts
+                        .filter(
+                          account => !this.isYnoodAccountLinked(account.debt_id)
+                        )
+                        .reduce((acc, curr) => {
+                          return acc + curr.current_balance
+                        }, 0)
+                    )}
+                    <br />
+                  </span>
                   {accounting.formatMoney(
                     ynoodAccounts.data.accounts.reduce((acc, curr) => {
                       return acc + curr.current_balance
