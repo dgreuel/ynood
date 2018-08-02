@@ -351,7 +351,9 @@ export default class Basic extends Component {
                       ? -1
                       : account1.balance < account2.balance
                         ? 1
-                        : 0
+                        : account1.name > account2.name
+                          ? -1
+                          : 1
                 )
                 .map((account, index) => (
                   <tr
@@ -527,14 +529,17 @@ export default class Basic extends Component {
           <table className="accountsTable">
             <tbody>
               {ynoodAccounts.data.accounts
-                .sort(
-                  (account1, account2) =>
-                    account1.current_balance < account2.current_balance
+                .sort((account1, account2) => {
+                  const payOffDate1 = moment(account1.scheduled_payoff_date)
+                  const payOffDate2 = moment(account2.scheduled_payoff_date)
+                  return payOffDate1.isAfter(payOffDate2)
+                    ? 1
+                    : payOffDate1.isBefore(payOffDate2)
                       ? -1
-                      : account1.current_balance > account2.current_balance
-                        ? 1
-                        : 0
-                )
+                      : account1.current_balance < account2.current_balance
+                        ? -1
+                        : 1
+                })
                 .map((account, index) => (
                   <tr
                     key={'YNOOD-debt-' + account.debt_id}
