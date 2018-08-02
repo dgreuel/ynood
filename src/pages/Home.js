@@ -360,7 +360,11 @@ export default class Basic extends Component {
                     key={account.id}
                     className={
                       (index % 2 === 0 ? 'greyBackground' : 'whiteBackground') +
-                      (hoveredOverAccount === account.id ? ' highlighted' : '')
+                      (hoveredOverAccount !== null &&
+                      account.id !== null &&
+                      hoveredOverAccount === account.id
+                        ? ' highlighted'
+                        : '')
                     }>
                     <td
                       className={
@@ -545,7 +549,11 @@ export default class Basic extends Component {
                     key={'YNOOD-debt-' + account.debt_id}
                     className={
                       (index % 2 === 0 ? 'greyBackground' : 'whiteBackground') +
-                      (hoveredOverAccount === account.ynab_guid
+                      (hoveredOverAccount !== null &&
+                      account.ynab_guid !== null &&
+                      account.ynab_guid !== '\u0000' &&
+                      account.ynab_guid.length > 0 &&
+                      hoveredOverAccount === account.ynab_guid
                         ? ' highlighted'
                         : '')
                     }>
@@ -746,12 +754,15 @@ export default class Basic extends Component {
               Visit YNOOD Site
             </button>
           </div>
-          <div id="dashboard">
-            Debt free{' '}
-            {this.whenDebtFree.bind(this)(this.props.ynoodUser.payoff_date)}! ({
-              this.props.ynoodUser.payoff_date
-            })
-          </div>
+          {this.props.ynoodUser.payoff_date ? (
+            <div id="dashboard">
+              Debt free{' '}
+              {this.whenDebtFree.bind(this)(this.props.ynoodUser.payoff_date)}!
+              ({this.props.ynoodUser.payoff_date})
+            </div>
+          ) : (
+            ''
+          )}
           <div id="ynoodAccounts">{this.YnoodAccountList.bind(this)()}</div>
         </div>
       </div>
