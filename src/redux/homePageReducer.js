@@ -158,6 +158,11 @@ export const linkYnoodAccountToYnabAccount = redux.action(
   'ynoodAccountUpdateResult'
 )
 
+export const setHoveredOverAccount = redux.action(
+  'SET_HOVERED_OVER_ACCOUNT',
+  async ({ http }, accountID) => accountID,
+  'hoveredOverAccount'
+)
 
 // A little helper for Redux `@connect()`
 export const connectBudgets = redux.getProperties

@@ -11,7 +11,8 @@ import {
   fetchYnoodUser,
   fetchYnoodAccounts,
   updateYnoodAccountBalance,
-  linkYnoodAccountToYnabAccount
+  linkYnoodAccountToYnabAccount,
+  setHoveredOverAccount
 } from '../redux/homePageReducer'
 import * as accounting from 'accounting'
 import * as _ from 'lodash'
@@ -42,7 +43,8 @@ import moment from 'moment'
     fetchYnabUser,
     fetchYnoodUser,
     registerYnoodUser,
-    deleteYnoodUser
+    deleteYnoodUser,
+    setHoveredOverAccount
   }
 )
 export default class Basic extends Component {
@@ -285,7 +287,9 @@ export default class Basic extends Component {
       ynabBudget,
       updateYnoodAccountBalance,
       fetchYnoodAccounts,
-      ynoodUser
+      ynoodUser,
+      ynabUser,
+      fetchYnoodUser
     } = this.props
     if (ynoodAccounts && ynoodAccounts.data) {
       const ynabAccount = _.find(
@@ -304,7 +308,9 @@ export default class Basic extends Component {
       ).then(result => {
         // console.log(result)
         if (result.rows_affected === 1) {
-          fetchYnoodAccounts(ynoodUser.undebt_user_id)
+          fetchYnoodAccounts(ynoodUser.undebt_user_id).then(
+            setTimeout(fetchYnoodUser, 30000, ynabUser.data.user.id)
+          )
         } else {
           console.log('no change was made')
         }
@@ -318,7 +324,9 @@ export default class Basic extends Component {
       linkYnoodAccountToYnabAccount,
       fetchYnoodAccounts,
       fetchYnabBudgetPending,
-      ynoodUser
+      ynoodUser,
+      setHoveredOverAccount,
+      hoveredOverAccount
     } = this.props
 
     if (fetchYnabBudgetPending) {
@@ -348,7 +356,10 @@ export default class Basic extends Component {
                 .map((account, index) => (
                   <tr
                     key={account.id}
-                    className={(index % 2 === 0 ? 'greyBackground' : '') + ' '}>
+                    className={
+                      (index % 2 === 0 ? 'greyBackground' : 'whiteBackground') +
+                      (hoveredOverAccount === account.id ? ' highlighted' : '')
+                    }>
                     <td
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
@@ -367,7 +378,12 @@ export default class Basic extends Component {
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
                         ' leftLinkButtons'
-                      }>
+                      }
+                      onMouseEnter={setHoveredOverAccount.bind(
+                        this,
+                        account.id
+                      )}
+                      onMouseLeave={setHoveredOverAccount.bind(this, null)}>
                       {this.isYnabAccountLinked.bind(this)(account.id) ? (
                         <button
                           type="button"
@@ -494,7 +510,9 @@ export default class Basic extends Component {
       linkYnoodAccountToYnabAccount,
       fetchYnoodAccounts,
       fetchYnoodAccountsPending,
-      ynoodUser
+      ynoodUser,
+      setHoveredOverAccount,
+      hoveredOverAccount
     } = this.props
     if (fetchYnoodAccountsPending) {
       return (
@@ -520,12 +538,22 @@ export default class Basic extends Component {
                 .map((account, index) => (
                   <tr
                     key={'YNOOD-debt-' + account.debt_id}
-                    className={index % 2 === 0 ? 'greyBackground' : ''}>
+                    className={
+                      (index % 2 === 0 ? 'greyBackground' : 'whiteBackground') +
+                      (hoveredOverAccount === account.ynab_guid
+                        ? ' highlighted'
+                        : '')
+                    }>
                     <td
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
                         ' rightLinkButtons'
-                      }>
+                      }
+                      onMouseEnter={setHoveredOverAccount.bind(
+                        this,
+                        account.ynab_guid
+                      )}
+                      onMouseLeave={setHoveredOverAccount.bind(this, null)}>
                       {this.isYnoodAccountLinked.bind(this)(account.debt_id) ? (
                         <button
                           type="button"

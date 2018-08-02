@@ -92,9 +92,16 @@
 
 .greyBackground {
   background-color: #e2dede;
-  border-right: 1px solid #e2dede;
   padding-right: 0px;
   margin: 0px;
+}
+
+.whiteBackground {
+  background-color: #ffffff;
+}
+
+.highlighted td {
+  background-color: aquamarine;
 }
 
 .budgetPickerDiv {
