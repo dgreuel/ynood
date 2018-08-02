@@ -98,8 +98,8 @@ export const fetchBudget = redux.action(
 export const fetchYnoodUser = redux.action(
   'FETCH_YNOOD_USER',
   async ({ http }, ynabID) => {
-    const response = await http.get(`/~api/v2/getuser?id=${ynabID}`)
-    return stripPreTags(response).info[0]
+    const response = await http.get(`/~api/v3/getuser?id=${ynabID}`)
+    return JSON.parse(response).info[0]
   },
   'ynoodUser'
 )
@@ -108,9 +108,9 @@ export const registerYnoodUser = redux.action(
   'REGISTER_YNOOD_USER',
   async ({ http }, email, ynabID) => {
     const response = await http.get(
-      `/~api/v2/register?email=${email}&cust_id=${ynabID}`
+      `/~api/v3/register?email=${email}&cust_id=${ynabID}`
     )
-    return stripPreTags(response)
+    return JSON.parse(response)
   },
   'registeredYnoodUser'
 )
@@ -118,8 +118,8 @@ export const registerYnoodUser = redux.action(
 export const deleteYnoodUser = redux.action(
   'DELETE_YNOOD_USER',
   async ({ http }, ynabID) => {
-    const response = await http.get(`/~api/v2/deleteuser?id=${ynabID}`)
-    return stripPreTags(response)
+    const response = await http.get(`/~api/v3/deleteuser?id=${ynabID}`)
+    return JSON.parse(response)
   },
   'deletedYnoodUser'
 )
@@ -127,9 +127,9 @@ export const deleteYnoodUser = redux.action(
 export const fetchYnoodAccounts = redux.action(
   'FETCH_YNOOD_ACCOUNTS',
   async ({ http }, undebtID) => {
-    const response = await http.get(`/~api/v2/getaccounts?id=${undebtID}`)
+    const response = await http.get(`/~api/v3/getaccounts?id=${undebtID}`)
     // console.log(response)
-    return stripPreTags(response)
+    return JSON.parse(response)
   },
   'ynoodAccounts'
 )
@@ -138,10 +138,10 @@ export const updateYnoodAccountBalance = redux.action(
   'UPDATE_YNOOD_ACCOUNT_BALANCE',
   async ({ http }, undebtID, debtID, balance) => {
     const response = await http.get(
-      `/~api/v2/updateaccount?id=${undebtID}&acct_id=${debtID}&element=balance&value=${balance}`
+      `/~api/v3/updateaccount?id=${undebtID}&acct_id=${debtID}&element=balance&value=${balance}`
     )
     // console.log(response)
-    return stripPreTags(response)
+    return JSON.parse(response)
   },
   'ynoodAccountUpdateResult'
 )
@@ -150,20 +150,14 @@ export const linkYnoodAccountToYnabAccount = redux.action(
   'UPDATE_YNOOD_ACCOUNT_LINKED_YNAB_ACCOUNT',
   async ({ http }, undebtID, debtID, ynabAccountID) => {
     const response = await http.get(
-      `/~api/v2/updateaccount?id=${undebtID}&acct_id=${debtID}&element=ynab_id&value=${ynabAccountID}`
+      `/~api/v3/updateaccount?id=${undebtID}&acct_id=${debtID}&element=ynab_id&value=${ynabAccountID}`
     )
     // console.log(response)
-    return stripPreTags(response)
+    return JSON.parse(response)
   },
   'ynoodAccountUpdateResult'
 )
 
-const stripPreTags = response => {
-  const regex = RegExp('<pre>([\\s\\S]+)</pre>', 'm')
-  const matchArray = regex.exec(response)
-  // console.log(matchArray)
-  return JSON.parse(matchArray[1])
-}
 
 // A little helper for Redux `@connect()`
 export const connectBudgets = redux.getProperties
