@@ -841,7 +841,7 @@ export default class Basic extends Component {
               Visit YNOOD Site
             </button>
           </div>
-          {this.props.ynoodUser.payoff_date ? (
+          {this.props.ynoodUser && this.props.ynoodUser.payoff_date ? (
             <div id="dashboard">
               Debt free{' '}
               {this.whenDebtFree.bind(this)(this.props.ynoodUser.payoff_date)}!
