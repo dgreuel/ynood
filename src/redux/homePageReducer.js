@@ -115,6 +115,36 @@ export const registerYnoodUser = redux.action(
   'registeredYnoodUser'
 )
 
+export const saveNewYnoodUser = redux.action(
+  'SAVE_NEW_YNOOD_USER',
+  async ({ http }, data) => {
+    const response = await http.post(
+      `/api/1/databases/ynood/collections/users`,
+      JSON.stringify(data),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          authentication: false
+        }
+      }
+    )
+
+    return response
+  },
+  'savedNewYnoodUser'
+)
+
+export const fetchYnoodUserUniqueID = redux.action(
+  'FETCH_YNOOD_USER_UNIQUE_ID',
+  async ({ http }, verifyKey) => {
+    const response = await http.get(
+      `/api/1/databases/ynood/collections/users?q={"verify_key": "${verifyKey}"}&fo=true`
+    )
+    return response ? response.uniqueID : null
+  },
+  'ynoodUserUniqueID'
+)
+
 export const deleteYnoodUser = redux.action(
   'DELETE_YNOOD_USER',
   async ({ http }, ynabID) => {
@@ -177,7 +207,9 @@ const initialState = {
   ynabUser: {},
   ynoodUser: {},
   registeredYnoodUser: {},
-  deletedYnoodUser: {}
+  deletedYnoodUser: {},
+  ynoodUserUniqueID: {},
+  savedNewYnoodUser: {}
 }
 
 // This is the Redux reducer which now

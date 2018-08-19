@@ -21,6 +21,15 @@ export default {
         parsedUrl.query.verify = process.env.REACT_APP_ynoodVerifyString
         return `${parsedUrl.url}?${queryString.stringify(parsedUrl.query)}`
       }
+      if (path.indexOf('databases') !== -1) {
+        //mLab API
+        const parsedUrl = queryString.parseUrl(
+          `${process.env.REACT_APP_ynoodProxyURL}https://api.mlab.com${path}`
+        )
+        parsedUrl.query.apiKey = process.env.REACT_APP_mlabApiKey
+        return `${parsedUrl.url}?${queryString.stringify(parsedUrl.query)}`
+      }
+
       return `https://api.youneedabudget.com/v1${path}`
     }
   },

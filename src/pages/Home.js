@@ -7,6 +7,8 @@ import {
   fetchBudget,
   connectBudgets,
   registerYnoodUser,
+  saveNewYnoodUser,
+  fetchYnoodUserUniqueID,
   deleteYnoodUser,
   fetchYnoodUser,
   fetchYnoodAccounts,
@@ -43,6 +45,8 @@ import moment from 'moment'
     fetchYnabUser,
     fetchYnoodUser,
     registerYnoodUser,
+    saveNewYnoodUser,
+    fetchYnoodUserUniqueID,
     deleteYnoodUser,
     setHoveredOverAccount
   }
@@ -67,7 +71,9 @@ export default class Basic extends Component {
       fetchBudget,
       fetchYnoodAccounts,
       registerYnoodUser,
-      //deleteYnoodUser,
+      saveNewYnoodUser,
+      fetchYnoodUserUniqueID,
+      deleteYnoodUser,
       fetchYnoodUser
     } = this.props
 
@@ -85,6 +91,7 @@ export default class Basic extends Component {
         .then(result => {
           if (result && result.undebt_user_id) {
             fetchYnoodAccounts(result.undebt_user_id)
+            fetchYnoodUserUniqueID(result.verify_key)
           } else {
             const email = `test-${ynabID.substring(0, 10)}@test.com`
             localStorage.setItem('ynoodUserEmail', email)
@@ -98,25 +105,27 @@ export default class Basic extends Component {
                 }
                 if (result && result.newUser) {
                   console.log(`new user: ${JSON.stringify(result.newUser)}`)
-                  localStorage.setItem(
-                    'ynoodUser',
-                    JSON.stringify(result.newUser)
-                  ) //this should be saved in a user database
+                  saveNewYnoodUser(result.newUser)
                   fetchYnoodUser(ynabID)
-                  fetchYnoodAccounts(this.props.ynabUser.undebt_user_id)
+                    .then(
+                      fetchYnoodAccounts(this.props.ynoodUser.undebt_user_id)
+                    )
+                    .then(
+                      fetchYnoodUserUniqueID(this.props.ynoodUser.verify_key)
+                    )
                 }
               })
               .catch(err => {
                 console.log(err)
-                // if (err.message === 'user exists already') {
-                //   deleteYnoodUser(ynabID).then(response => {
-                //     if (response.success) {
-                //       console.log(`deleted user ${ynabID}`)
-                //     } else {
-                //       console.log('couldnt delete user')
-                //     }
-                //   })
-                // }
+                if (err.message === 'user exists already') {
+                  deleteYnoodUser(ynabID).then(response => {
+                    if (response.success) {
+                      console.log(`deleted user ${ynabID}`)
+                    } else {
+                      console.log('couldnt delete user')
+                    }
+                  })
+                }
               })
           }
         })
@@ -177,7 +186,8 @@ export default class Basic extends Component {
           <select
             id="budgetPicker"
             value={this.state.selectedBudget}
-            onChange={this.updateSelectedBudget.bind(this)}>
+            onChange={this.updateSelectedBudget.bind(this)}
+          >
             {budgets.data.budgets.map(budget => (
               <option key={budget.id} value={budget.id}>
                 {budget.name}
@@ -189,7 +199,8 @@ export default class Basic extends Component {
             type="button"
             onClick={() => {
               fetchBudgetList().then(this.updateSelectedBudget())
-            }}>
+            }}
+          >
             <MdRefresh />
           </button>
         </div>
@@ -238,7 +249,7 @@ export default class Basic extends Component {
   }
 
   isYnabAccountSynced = id => {
-    // console.log('checking if Linked')
+    // console.log('checking if Synced')
     const { ynoodAccounts, ynabBudget } = this.props
     const ynabAccount = _.find(
       ynabBudget.data.budget.accounts,
@@ -352,7 +363,7 @@ export default class Basic extends Component {
                   return this.isDebtAccount(account)
                 })
                 .sort((account1, account2) => {
-                  console.log(ynoodAccounts)
+                  //console.log(ynoodAccounts)
                   const linkedAccount1 = ynoodAccounts.data
                     ? _.find(
                         ynoodAccounts.data.accounts,
@@ -398,19 +409,22 @@ export default class Basic extends Component {
                       hoveredOverAccount === account.id
                         ? ' highlighted'
                         : '')
-                    }>
+                    }
+                  >
                     <td
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
                         ' accountSummaryLeft'
-                      }>
+                      }
+                    >
                       {account.name}
                     </td>
                     <td
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
                         ' balancesLeft'
-                      }>
+                      }
+                    >
                       {accounting.formatMoney(account.balance / 1000)}
                     </td>
                     <td
@@ -422,7 +436,8 @@ export default class Basic extends Component {
                         this,
                         account.id
                       )}
-                      onMouseLeave={setHoveredOverAccount.bind(this, null)}>
+                      onMouseLeave={setHoveredOverAccount.bind(this, null)}
+                    >
                       {this.isYnabAccountLinked.bind(this)(account.id) ? (
                         <button
                           type="button"
@@ -434,7 +449,8 @@ export default class Basic extends Component {
                             this.isYnabAccountSynced.bind(this)(account.id)
                               ? `btn-success`
                               : 'btn-primary'
-                          }`}>
+                          }`}
+                        >
                           {this.isYnabAccountSynced.bind(this)(account.id) ? (
                             <span>
                               <span>Synced </span>
@@ -474,7 +490,8 @@ export default class Basic extends Component {
                                 }
                               })
                             })
-                          }}>
+                          }}
+                        >
                           Select
                         </button>
                       ) : this.state.linkingAccounts.accountToLink ===
@@ -490,7 +507,8 @@ export default class Basic extends Component {
                                 accountToLink: ''
                               }
                             })
-                          }>
+                          }
+                        >
                           <span>Cancel </span>
                           <span style={{ fontSize: '15px' }}>
                             <FaClose />
@@ -507,7 +525,8 @@ export default class Basic extends Component {
                                 accountToLink: account.id
                               }
                             })
-                          }>
+                          }
+                        >
                           <span>Link </span>
                           <span style={{ fontSize: '15px' }}>
                             <FaChain />
@@ -522,8 +541,10 @@ export default class Basic extends Component {
                 ))}
               <tr key="total">
                 <td colSpan={2} className="total">
-                  Linked:<br />
-                  Unlinked:<br />
+                  Linked:
+                  <br />
+                  Unlinked:
+                  <br />
                   Total:
                 </td>
                 <td className="totalRow">
@@ -619,7 +640,8 @@ export default class Basic extends Component {
                       hoveredOverAccount === account.ynab_guid
                         ? ' highlighted'
                         : '')
-                    }>
+                    }
+                  >
                     <td
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
@@ -629,7 +651,8 @@ export default class Basic extends Component {
                         this,
                         account.ynab_guid
                       )}
-                      onMouseLeave={setHoveredOverAccount.bind(this, null)}>
+                      onMouseLeave={setHoveredOverAccount.bind(this, null)}
+                    >
                       {this.isYnoodAccountLinked.bind(this)(account.debt_id) ? (
                         <button
                           type="button"
@@ -653,7 +676,8 @@ export default class Basic extends Component {
                                 }
                               })
                             })
-                          }}>
+                          }}
+                        >
                           <span style={{ fontSize: '13px' }}>
                             <FaChainBroken />
                           </span>
@@ -682,7 +706,8 @@ export default class Basic extends Component {
                                 }
                               })
                             })
-                          }}>
+                          }}
+                        >
                           Select
                         </button>
                       ) : this.state.linkingAccounts.accountToLink ===
@@ -698,7 +723,8 @@ export default class Basic extends Component {
                                 accountToLink: ''
                               }
                             })
-                          }>
+                          }
+                        >
                           <span>Cancel </span>
                           <span style={{ fontSize: '15px' }}>
                             <FaClose />
@@ -715,7 +741,8 @@ export default class Basic extends Component {
                                 accountToLink: account.debt_id
                               }
                             })
-                          }>
+                          }
+                        >
                           <span style={{ fontSize: '13px' }}>
                             <FaChevronLeft />
                           </span>
@@ -730,22 +757,26 @@ export default class Basic extends Component {
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
                         ' accountSummaryRight'
-                      }>
+                      }
+                    >
                       {account.nickname}:
                     </td>
                     <td
                       className={
                         (index % 2 === 0 ? 'greyBackground' : '') +
                         ' balancesRight'
-                      }>
+                      }
+                    >
                       {accounting.formatMoney(account.current_balance)}
                     </td>
                   </tr>
                 ))}
               <tr key="total">
                 <td colSpan={2} className="total">
-                  Linked:<br />
-                  Unlinked:<br />
+                  Linked:
+                  <br />
+                  Unlinked:
+                  <br />
                   Total:
                 </td>
                 <td className="totalRow">
@@ -797,14 +828,16 @@ export default class Basic extends Component {
           {!this.state.ynabToken ? (
             <button
               className="btn btn-lg btn-default"
-              onClick={this.authorizeWithYnab.bind(this)}>
+              onClick={this.authorizeWithYnab.bind(this)}
+            >
               Connect your YNAB account
             </button>
           ) : (
             <div>
               <button
                 className="btn btn-sm btn-outline-default logout"
-                onClick={this.resetToken.bind(this)}>
+                onClick={this.resetToken.bind(this)}
+              >
                 <span style={{ fontSize: '16px' }}>
                   <IoLogOut />
                 </span>
@@ -837,7 +870,8 @@ export default class Basic extends Component {
                   `https://undebt.it/private~label/ynab/autologin.php?${query}`,
                   '_blank'
                 )
-              }}>
+              }}
+            >
               Visit YNOOD Site
             </button>
           </div>
