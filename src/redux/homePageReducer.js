@@ -205,11 +205,11 @@ const initialState = {
   ynoodAccounts: {},
   updatedYnoodAccount: {},
   ynabUser: {},
-  ynoodUser: {},
+  ynoodUser: null,
   registeredYnoodUser: {},
   deletedYnoodUser: {},
-  ynoodUserUniqueID: {},
-  savedNewYnoodUser: {}
+  ynoodUserUniqueID: null,
+  savedNewYnoodUser: null
 }
 
 // This is the Redux reducer which now

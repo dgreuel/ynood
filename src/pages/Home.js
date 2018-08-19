@@ -180,6 +180,9 @@ export default class Basic extends Component {
     }
 
     if (budgets && budgets.data && budgets.data.budgets) {
+      if (budgets.data.budgets.length === 0) {
+        return 'no budgets available'
+      }
       return (
         <div className="budgetPickerDiv">
           Budget:{' '}
@@ -207,7 +210,7 @@ export default class Basic extends Component {
       )
     }
 
-    return 'no budgets available'
+    return ''
   }
   updateSelectedBudget = () => {
     const { fetchBudget, ynabBudget } = this.props
@@ -850,31 +853,36 @@ export default class Basic extends Component {
         </div>
         <div className="ynoodSide">
           <h2>YNOOD Accounts</h2>
-          <div className="login">
-            <button
-              className="btn btn-sm btn-primary"
-              onClick={() => {
-                const userKeys = JSON.parse(localStorage.getItem('ynoodUser'))
-                const { verify_key, uniqueID } = userKeys
-                const query = queryString.stringify({
-                  email:
-                    localStorage.getItem('ynoodUserEmail') ||
-                    process.env.REACT_APP_ynoodUserEmail,
-                  verify_key:
-                    verify_key || process.env.REACT_APP_ynoodUserVerifyKey,
-                  user_key: uniqueID || process.env.REACT_APP_ynoodUniqueID,
-                  key: process.env.REACT_APP_ynoodAppKey,
-                  verify: process.env.REACT_APP_ynoodVerifyString
-                })
-                window.open(
-                  `https://undebt.it/private~label/ynab/autologin.php?${query}`,
-                  '_blank'
-                )
-              }}
-            >
-              Visit YNOOD Site
-            </button>
-          </div>
+          {this.props.ynoodUser &&
+          (this.props.ynoodUserUniqueID || this.props.registeredYnoodUser) ? (
+            <div className="login">
+              <button
+                className="btn btn-sm btn-primary"
+                onClick={() => {
+                  const { verify_key, email } = this.props.ynoodUser
+                  const uniqueID =
+                    this.props.ynoodUserUniqueID ||
+                    this.props.registeredYnoodUser.newUser.uniqueID
+                  const query = queryString.stringify({
+                    email,
+                    verify_key,
+                    user_key: uniqueID,
+                    key: process.env.REACT_APP_ynoodAppKey,
+                    verify: process.env.REACT_APP_ynoodVerifyString
+                  })
+                  window.open(
+                    `https://undebt.it/private~label/ynab/autologin.php?${query}`,
+                    '_blank'
+                  )
+                }}
+              >
+                Visit YNOOD Site
+              </button>
+            </div>
+          ) : (
+            ''
+          )}
+
           {this.props.ynoodUser && this.props.ynoodUser.payoff_date ? (
             <div id="dashboard">
               Debt free{' '}
