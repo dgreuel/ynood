@@ -20,5 +20,6 @@ export default ({ children }) => (
     </nav>
 
     <div className="Body">{children}</div>
+    <div className="Footer">&copy; 2018 YNOOD; You Need Out of Debt is not affiliated in any way with You Need A Budget (YNAB).</div>
   </div>
 )

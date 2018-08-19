@@ -24,8 +24,24 @@
 
 .Body {
   margin: 10px 0;
-  font-family: "Avenir Next", Arial;
+  font-family: 'Avenir Next', Arial;
   width: 100%;
+}
+
+.About {
+  padding: 20px;
+}
+.About p {
+  text-align: left;
+  padding-bottom: 10px;
+}
+strong {
+  font-weight: bold;
+}
+
+.Footer {
+  font-style: italic;
+  font-size: 9px;
 }
 
 .LeftCol {
@@ -55,7 +71,7 @@
 }
 
 .NavBar a {
-  font: 18px "Avenir Next", Arial;
+  font: 18px 'Avenir Next', Arial;
   color: black;
   display: inline;
   text-decoration: none;
