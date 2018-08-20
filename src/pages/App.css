@@ -180,14 +180,14 @@ strong {
   padding-right: 10px;
   padding-left: 10px;
   text-align: center;
-  min-width: 140px;
+  min-width: 145px;
 }
 
 .rightLinkButtons {
   padding-left: 10px;
   padding-right: 10px;
   text-align: center;
-  min-width: 140px;
+  min-width: 145px;
 }
 
 .ynabSide {
@@ -196,6 +196,7 @@ strong {
   border: 1px solid #333;
   margin: 1%;
   background-color: rgba(212, 242, 242, 0.27);
+  padding: 20px;
 }
 
 #ynabBudget {
@@ -212,6 +213,7 @@ strong {
   border: 1px solid #333;
   margin: 1%;
   background-color: rgba(212, 242, 242, 0.27);
+  padding: 20px;
 }
 
 #dashboard {
