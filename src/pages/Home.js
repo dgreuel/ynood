@@ -30,6 +30,7 @@ import IoLogOut from 'react-icons/lib/io/log-out'
 import * as queryString from '../deps/query-string'
 import { DotLoader, BeatLoader } from 'react-spinners'
 import moment from 'moment'
+import Register from './Register'
 
 @meta(() => ({
   title: 'Home!'
@@ -852,9 +853,10 @@ export default class Basic extends Component {
           )}
         </div>
         <div className="ynoodSide">
-          <h2>YNOOD Accounts</h2>
+          
           {this.props.ynoodUser &&
           (this.props.ynoodUserUniqueID || this.props.registeredYnoodUser) ? (
+            <div><h2>YNOOD Accounts</h2>
             <div className="login">
               <button
                 className="btn btn-sm btn-primary"
@@ -878,9 +880,9 @@ export default class Basic extends Component {
               >
                 Visit YNOOD Site
               </button>
-            </div>
+            </div></div>
           ) : (
-            ''
+            <Register />
           )}
 
           {this.props.ynoodUser && this.props.ynoodUser.payoff_date ? (
