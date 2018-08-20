@@ -31,6 +31,22 @@ export default () => (
       </span>
     </p>
     <p>Get started now by connecting your YNAB account:</p>
-    <button>Let's do it!</button>
+    <a href="/">
+      <button>Let's do it!</button>
+    </a>
+    <p />
+    <p>
+      <a name="privacy">
+        <h3>Privacy Policy</h3>
+      </a>
+      <br />
+      When you use YNOOD to connect to your YNAB account, all of your budget
+      information is securely downloaded and a cached copy is stored in your
+      browser. When you sign up for a YNOOD account, you agree to provide your
+      email address and debt account information (account names, balances,
+      minimum payment, due dates, etc.) This information will be stored securely
+      on YNOOD's servers and used solely for the purpose of providing you with
+      the service. It will not be sold to or shared with third parties.
+    </p>
   </div>
 )
