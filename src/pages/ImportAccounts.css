@@ -1,0 +1,33 @@
+.import-form {
+  text-align: center;
+}
+
+.import-form input {
+  width: 100px;
+}
+
+.import-form label {
+  padding: 3px;
+}
+
+.import-form-account {
+  display: flex;
+  flex-direction: row;
+  border: 1px dashed black;
+  margin-bottom: 5px;
+}
+
+.import-form-account .account-left {
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+
+.import-form-account .account-right {
+  text-align: left;
+}
+
+.import-form .balance {
+  font-style: italic;
+}

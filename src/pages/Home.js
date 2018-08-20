@@ -9,6 +9,7 @@ import {
   registerYnoodUser,
   saveNewYnoodUser,
   fetchYnoodUserUniqueID,
+  createYnoodAccounts,
   deleteYnoodUser,
   fetchYnoodUser,
   fetchYnoodAccounts,
@@ -49,6 +50,7 @@ import ImportAccounts from './ImportAccounts'
     registerYnoodUser,
     saveNewYnoodUser,
     fetchYnoodUserUniqueID,
+    createYnoodAccounts,
     deleteYnoodUser,
     setHoveredOverAccount
   }
@@ -230,14 +232,6 @@ export default class Basic extends Component {
     }
     fetchBudget(selection)
   }
-  isDebtAccount = account => {
-    return (
-      account.deleted === false &&
-      account.closed === false &&
-      (account.type === 'creditCard' || account.type === 'otherLiability') &&
-      account.balance < 0
-    )
-  }
 
   isYnabAccountLinked = id => {
     // console.log('checking if Linked')
@@ -365,7 +359,7 @@ export default class Basic extends Component {
             <tbody>
               {ynabBudget.data.budget.accounts
                 .filter(account => {
-                  return this.isDebtAccount(account)
+                  return isDebtAccount(account)
                 })
                 .sort((account1, account2) => {
                   //console.log(ynoodAccounts)
@@ -558,7 +552,7 @@ export default class Basic extends Component {
                       ynabBudget.data.budget.accounts
                         .filter(account => {
                           return (
-                            this.isDebtAccount(account) &&
+                            isDebtAccount(account) &&
                             this.isYnabAccountLinked(account.id)
                           )
                         })
@@ -571,7 +565,7 @@ export default class Basic extends Component {
                       ynabBudget.data.budget.accounts
                         .filter(account => {
                           return (
-                            this.isDebtAccount(account) &&
+                            isDebtAccount(account) &&
                             !this.isYnabAccountLinked(account.id)
                           )
                         })
@@ -584,7 +578,7 @@ export default class Basic extends Component {
                   {accounting.formatMoney(
                     ynabBudget.data.budget.accounts
                       .filter(account => {
-                        return this.isDebtAccount(account)
+                        return isDebtAccount(account)
                       })
                       .reduce((acc, curr) => {
                         return acc + curr.balance
@@ -597,7 +591,7 @@ export default class Basic extends Component {
         </div>
       )
     }
-    return 'select a budget to list accounts'
+    return ''
   }
   YnoodAccountList = () => {
     const {
@@ -819,7 +813,7 @@ export default class Basic extends Component {
         </div>
       )
     }
-    return 'no YNOOD accounts found'
+    return ''
   }
   whenDebtFree = payoff_date => {
     return (payoff_date = moment(payoff_date).fromNow())
@@ -828,17 +822,25 @@ export default class Basic extends Component {
     return (
       <div className="accounts">
         <div className="ynabSide">
-          <h2>YNAB Debt Accounts</h2>
-          <div>{this.budgetPicker.bind(this)()}</div>
           {!this.state.ynabToken ? (
-            <button
-              className="btn btn-lg btn-default"
-              onClick={this.authorizeWithYnab.bind(this)}
-            >
-              Connect your YNAB account
-            </button>
+            <div>
+              <p className="h5 text-center mb-4">Step 1: Connect to YNAB</p>
+              <button
+                className="btn btn-lg btn-default"
+                onClick={this.authorizeWithYnab.bind(this)}
+              >
+                Log In to YNAB
+              </button>
+              <a href="https://ynab.com/referral/?ref=NJEogaRL6Tux6JIm&utm_source=customer_referral">
+                <button className="btn btn-lg btn-elegant">
+                  Sign up for YNAB
+                </button>
+              </a>
+            </div>
           ) : (
             <div>
+              <h2>YNAB Debt Accounts</h2>
+              <div>{this.budgetPicker.bind(this)()}</div>
               <button
                 className="btn btn-sm btn-outline-default logout"
                 onClick={this.resetToken.bind(this)}
@@ -858,7 +860,8 @@ export default class Basic extends Component {
           (this.props.ynoodUserUniqueID || this.props.registeredYnoodUser) ? (
             this.props.ynoodAccounts &&
             this.props.ynoodAccounts.data &&
-            this.props.ynoodAccounts.data.accounts.length > 0 ? (
+            this.props.ynoodAccounts.data.accounts.length > 0 &&
+            !this.props.fetchYnabBudgetPending ? (
               <div>
                 <h2>YNOOD Accounts</h2>
                 <div className="login">
@@ -887,7 +890,20 @@ export default class Basic extends Component {
                 </div>
               </div>
             ) : (
-              <ImportAccounts accounts={[{}, {}, {}]} />
+              <ImportAccounts
+                accounts={
+                  this.props.ynabBudget.data
+                    ? this.props.ynabBudget.data.budget.accounts
+                    : []
+                }
+                importFunction={this.props.createYnoodAccounts.bind(this)}
+                fetchFunction={this.props.fetchYnoodAccounts.bind(this)}
+                userID={
+                  this.props.ynoodUser
+                    ? this.props.ynoodUser.undebt_user_id
+                    : ''
+                }
+              />
             )
           ) : (
             <div>
@@ -902,7 +918,10 @@ export default class Basic extends Component {
             </div>
           )}
 
-          {this.props.ynoodUser && this.props.ynoodUser.payoff_date ? (
+          {this.props.ynoodUser &&
+          this.props.ynoodUser.payoff_date &&
+          this.props.ynoodAccounts.data &&
+          this.props.ynoodAccounts.data.accounts.length > 0 ? (
             <div id="dashboard">
               Debt free{' '}
               {this.whenDebtFree.bind(this)(this.props.ynoodUser.payoff_date)}!
@@ -916,4 +935,12 @@ export default class Basic extends Component {
       </div>
     )
   }
+}
+export const isDebtAccount = account => {
+  return (
+    account.deleted === false &&
+    account.closed === false &&
+    (account.type === 'creditCard' || account.type === 'otherLiability') &&
+    account.balance < 0
+  )
 }

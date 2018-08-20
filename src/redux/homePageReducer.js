@@ -115,6 +115,26 @@ export const registerYnoodUser = redux.action(
   'registeredYnoodUser'
 )
 
+export const createYnoodAccounts = redux.action(
+  'CREATE_YNOOD_ACCOUNTS',
+  async ({ http }, data, ynabUserID) => {
+    const requests = data.accounts.map(account =>
+      http.get(
+        `/~api/v3/createaccount?id=${ynabUserID}&ynab-id=${
+          account.id
+        }&description=${account.name}&balance=${account.balance}&int-rate=${
+          account.interestrate
+        }&min-payment=${account.minimumpayment}&due-date=${account.nextduedate}`
+      )
+    )
+    const responses = await Promise.all(requests).catch(error =>
+      console.log(error)
+    )
+    return responses
+  },
+  'createdYnoodAccounts'
+)
+
 export const saveNewYnoodUser = redux.action(
   'SAVE_NEW_YNOOD_USER',
   async ({ http }, data) => {
@@ -123,9 +143,9 @@ export const saveNewYnoodUser = redux.action(
       JSON.stringify(data),
       {
         headers: {
-          'Content-Type': 'application/json',
-          authentication: false
-        }
+          'Content-Type': 'application/json'
+        },
+        authentication: false
       }
     )
 
