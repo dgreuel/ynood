@@ -87,9 +87,12 @@ export default class Basic extends Component {
         if (result && result.newUser) {
           console.log(`new user: ${JSON.stringify(result.newUser)}`)
           saveNewYnoodUser(result.newUser)
-          fetchYnoodUser(ynabID)
-            .then(fetchYnoodAccounts(this.props.ynoodUser.undebt_user_id))
-            .then(fetchYnoodUserUniqueID(this.props.ynoodUser.verify_key))
+          fetchYnoodUser(ynabID).then(result => {
+            this.setState({ ynoodUser: result })
+            fetchYnoodAccounts(this.state.ynoodUser.undebt_user_id).then(
+              fetchYnoodUserUniqueID(this.state.ynoodUser.verify_key)
+            )
+          })
         }
       })
       .catch(err => {

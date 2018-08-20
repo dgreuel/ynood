@@ -7,7 +7,7 @@ import './ImportAccounts.css'
 
 export default class ImportAccounts extends React.Component {
   render() {
-    const { userID } = this.props
+    const { userID, importFunction, fetchFunction } = this.props
     return (
       <div className="import">
         <p className="h5 text-center mb-4">Step 3: Enter Debt Details</p>
@@ -17,9 +17,8 @@ export default class ImportAccounts extends React.Component {
               <Form
                 id="import-form"
                 onSubmit={values =>
-                  this.props
-                    .importFunction(values, userID)
-                    .then(this.props.fetchFunction(userID))
+                 importFunction(values, userID)
+                    .then(result=>fetchFunction(userID))
                 }
               >
                 {({ formApi }) => (
