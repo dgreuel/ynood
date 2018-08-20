@@ -29,6 +29,7 @@
     "fs-extra": "3.0.1",
     "history": "3.3.0",
     "html-webpack-plugin": "2.29.0",
+    "informed": "^1.10.4",
     "jest": "20.0.4",
     "lodash": "^4.17.10",
     "mdbreact": "^4.6.0",

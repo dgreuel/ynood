@@ -31,6 +31,7 @@ import * as queryString from '../deps/query-string'
 import { DotLoader, BeatLoader } from 'react-spinners'
 import moment from 'moment'
 import Register from './Register'
+import ImportAccounts from './ImportAccounts'
 
 @meta(() => ({
   title: 'Home!'
@@ -65,16 +66,49 @@ export default class Basic extends Component {
       ynabToken: this.findYnabToken()
     }
   }
+  registerForYnood(email, ynabID) {
+    const {
+      registerYnoodUser,
+      saveNewYnoodUser,
+      fetchYnoodUser,
+      fetchYnoodAccounts,
+      fetchYnoodUserUniqueID
+    } = this.props
+    registerYnoodUser(email, ynabID)
+      .then(result => {
+        if (result && result.userExists) {
+          throw new Error('user exists already')
+        }
+        if (result && result.newUser && !result.newUser.success) {
+          throw new Error('error creating user')
+        }
+        if (result && result.newUser) {
+          console.log(`new user: ${JSON.stringify(result.newUser)}`)
+          saveNewYnoodUser(result.newUser)
+          fetchYnoodUser(ynabID)
+            .then(fetchYnoodAccounts(this.props.ynoodUser.undebt_user_id))
+            .then(fetchYnoodUserUniqueID(this.props.ynoodUser.verify_key))
+        }
+      })
+      .catch(err => {
+        console.log(err)
+        // if (err.message === 'user exists already') {
+        // deleteYnoodUser(ynabID).then(response => {
+        //   if (response.success) {
+        //     console.log(`deleted user ${ynabID}`)
+        //   } else {
+        //     console.log('couldnt delete user')
+        //   }
+        // })
+      })
+  }
   componentDidMount() {
     const {
       fetchYnabUser,
       fetchBudgetList,
       fetchBudget,
       fetchYnoodAccounts,
-      registerYnoodUser,
-      saveNewYnoodUser,
       fetchYnoodUserUniqueID,
-      deleteYnoodUser,
       fetchYnoodUser
     } = this.props
 
@@ -94,40 +128,7 @@ export default class Basic extends Component {
             fetchYnoodAccounts(result.undebt_user_id)
             fetchYnoodUserUniqueID(result.verify_key)
           } else {
-            const email = `test-${ynabID.substring(0, 10)}@test.com`
-            localStorage.setItem('ynoodUserEmail', email)
-            return registerYnoodUser(email, ynabID)
-              .then(result => {
-                if (result && result.userExists) {
-                  throw new Error('user exists already')
-                }
-                if (result && result.newUser && !result.newUser.success) {
-                  throw new Error('error creating user')
-                }
-                if (result && result.newUser) {
-                  console.log(`new user: ${JSON.stringify(result.newUser)}`)
-                  saveNewYnoodUser(result.newUser)
-                  fetchYnoodUser(ynabID)
-                    .then(
-                      fetchYnoodAccounts(this.props.ynoodUser.undebt_user_id)
-                    )
-                    .then(
-                      fetchYnoodUserUniqueID(this.props.ynoodUser.verify_key)
-                    )
-                }
-              })
-              .catch(err => {
-                console.log(err)
-                if (err.message === 'user exists already') {
-                  deleteYnoodUser(ynabID).then(response => {
-                    if (response.success) {
-                      console.log(`deleted user ${ynabID}`)
-                    } else {
-                      console.log('couldnt delete user')
-                    }
-                  })
-                }
-              })
+            //wait for user to register
           }
         })
 
@@ -853,36 +854,52 @@ export default class Basic extends Component {
           )}
         </div>
         <div className="ynoodSide">
-          
           {this.props.ynoodUser &&
           (this.props.ynoodUserUniqueID || this.props.registeredYnoodUser) ? (
-            <div><h2>YNOOD Accounts</h2>
-            <div className="login">
-              <button
-                className="btn btn-sm btn-primary"
-                onClick={() => {
-                  const { verify_key, email } = this.props.ynoodUser
-                  const uniqueID =
-                    this.props.ynoodUserUniqueID ||
-                    this.props.registeredYnoodUser.newUser.uniqueID
-                  const query = queryString.stringify({
-                    email,
-                    verify_key,
-                    user_key: uniqueID,
-                    key: process.env.REACT_APP_ynoodAppKey,
-                    verify: process.env.REACT_APP_ynoodVerifyString
-                  })
-                  window.open(
-                    `https://undebt.it/private~label/ynab/autologin.php?${query}`,
-                    '_blank'
-                  )
-                }}
-              >
-                Visit YNOOD Site
-              </button>
-            </div></div>
+            this.props.ynoodAccounts &&
+            this.props.ynoodAccounts.data &&
+            this.props.ynoodAccounts.data.accounts.length > 0 ? (
+              <div>
+                <h2>YNOOD Accounts</h2>
+                <div className="login">
+                  <button
+                    className="btn btn-sm btn-primary"
+                    onClick={() => {
+                      const { verify_key, email } = this.props.ynoodUser
+                      const uniqueID =
+                        this.props.ynoodUserUniqueID ||
+                        this.props.registeredYnoodUser.newUser.uniqueID
+                      const query = queryString.stringify({
+                        email,
+                        verify_key,
+                        user_key: uniqueID,
+                        key: process.env.REACT_APP_ynoodAppKey,
+                        verify: process.env.REACT_APP_ynoodVerifyString
+                      })
+                      window.open(
+                        `https://undebt.it/private~label/ynab/autologin.php?${query}`,
+                        '_blank'
+                      )
+                    }}
+                  >
+                    Visit YNOOD Site
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <ImportAccounts accounts={[{}, {}, {}]} />
+            )
           ) : (
-            <Register />
+            <div>
+              <Register
+                registrationFunction={this.registerForYnood.bind(this)}
+                ynabID={
+                  this.props.ynabUser.data
+                    ? this.props.ynabUser.data.user.id
+                    : ''
+                }
+              />
+            </div>
           )}
 
           {this.props.ynoodUser && this.props.ynoodUser.payoff_date ? (

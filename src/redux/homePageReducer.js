@@ -106,9 +106,9 @@ export const fetchYnoodUser = redux.action(
 
 export const registerYnoodUser = redux.action(
   'REGISTER_YNOOD_USER',
-  async ({ http }, email, ynabID) => {
+  async ({ http }, email, ynabID, budget = null) => {
     const response = await http.get(
-      `/~api/v3/register?email=${email}&cust_id=${ynabID}`
+      `/~api/v3/register?email=${email}&cust_id=${ynabID}&budget=${budget}`
     )
     return JSON.parse(response)
   },
