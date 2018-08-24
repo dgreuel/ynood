@@ -883,7 +883,7 @@ export default class Basic extends Component {
                         verify: process.env.REACT_APP_ynoodVerifyString
                       })
                       window.open(
-                        `https://undebt.it/private~label/ynab/autologin.php?${query}`,
+                        `https://youneedoutofdebt.com/autologin.php?${query}`,
                         '_blank'
                       )
                     }}
