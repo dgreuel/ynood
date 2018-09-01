@@ -1,18 +1,29 @@
 {
-    "presets": [
-        ["env", {
-            "modules": false
-        }],
-        "react",
-        "es2015"
-
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false
+      }
     ],
+    "react",
+    "es2015",
+    "react-app"
+  ],
 
-    "plugins": [
-        "transform-object-rest-spread",
-        "transform-decorators-legacy",
-        "transform-class-properties",
-        "transform-runtime",
-        "emotion"
-    ]
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-decorators-legacy",
+    "transform-class-properties",
+    "transform-runtime",
+    "emotion"
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "transform-es2015-modules-commonjs",
+        "transform-decorators-legacy"
+      ]
+    }
+  }
 }

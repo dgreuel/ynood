@@ -34,28 +34,7 @@ import moment from 'moment'
 import Register from './Register'
 import ImportAccounts from './ImportAccounts'
 
-@meta(() => ({
-  title: 'Home!'
-}))
-@connect(
-  ({ homePage }) => connectBudgets(homePage),
-  {
-    fetchBudgetList,
-    fetchBudget,
-    fetchYnoodAccounts,
-    updateYnoodAccountBalance,
-    linkYnoodAccountToYnabAccount,
-    fetchYnabUser,
-    fetchYnoodUser,
-    registerYnoodUser,
-    saveNewYnoodUser,
-    fetchYnoodUserUniqueID,
-    createYnoodAccounts,
-    deleteYnoodUser,
-    setHoveredOverAccount
-  }
-)
-export default class Basic extends Component {
+export class Home extends Component {
   constructor() {
     super()
     this.state = {
@@ -236,18 +215,8 @@ export default class Basic extends Component {
     fetchBudget(selection)
   }
 
-  isYnabAccountLinked = id => {
-    // console.log('checking if Linked')
-    const { ynoodAccounts } = this.props
-    if (ynoodAccounts && ynoodAccounts.data) {
-      return _.find(
-        ynoodAccounts.data.accounts,
-        account => account.ynab_guid === id
-      )
-        ? true
-        : false
-    }
-    return true
+  isYnabAccountLinked = (id, { ynoodAccounts } = this.props) => {
+    return isYnabAccountLinked(id, ynoodAccounts)
   }
 
   isYnabAccountSynced = id => {
@@ -946,4 +915,35 @@ export const isDebtAccount = account => {
     (account.type === 'creditCard' || account.type === 'otherLiability') &&
     account.balance < 0
   )
+}
+export default connect(
+  ({ homePage }) => connectBudgets(homePage),
+  {
+    fetchBudgetList,
+    fetchBudget,
+    fetchYnoodAccounts,
+    updateYnoodAccountBalance,
+    linkYnoodAccountToYnabAccount,
+    fetchYnabUser,
+    fetchYnoodUser,
+    registerYnoodUser,
+    saveNewYnoodUser,
+    fetchYnoodUserUniqueID,
+    createYnoodAccounts,
+    deleteYnoodUser,
+    setHoveredOverAccount
+  }
+)(Home)
+
+export const isYnabAccountLinked = (id, ynoodAccounts) => {
+  // console.log('checking if Linked')
+  if (ynoodAccounts && ynoodAccounts.data) {
+    return _.find(
+      ynoodAccounts.data.accounts,
+      account => account.ynab_guid === id
+    )
+      ? true
+      : false
+  }
+  return true
 }
