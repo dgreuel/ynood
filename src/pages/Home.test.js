@@ -34,7 +34,6 @@ const mockYnoodAccounts = [
     scheduled_payoff_date: '2018-12-01'
   }
 ]
-let home
 const props = {
   fetchYnabUser: {},
   fetchBudgetList: {},
@@ -55,12 +54,15 @@ const props = {
 }
 
 describe('Home page', () => {
+  let home = null
+  expect(home).toBeNull()
   describe('accounts', () => {
-    beforeEach(() => {})
+    beforeEach(() => {
+      home = render(<Home {...props} />)
+    })
     afterEach(cleanup)
     describe('isYnabAccountLinked', () => {
       it('should return true if passed a linked YNAB GUID', () => {
-        home = render(<Home {...props} />)
         const linked = isYnabAccountLinked(
           '4f8978af-dc34-4c45-bfda-5fb82925cb93',
           mockYnoodAccounts
@@ -68,10 +70,18 @@ describe('Home page', () => {
         expect(linked).toBe(true)
       })
       it('should return false if passed an unlinked YNAB GUID', () => {
-        home = render(<Home {...props} />)
+        // home = render(<Home {...props} />)
         const linked = isYnabAccountLinked(
           '4f8978af-dc34-4c45-bfda-5fb82925cb94',
           mockYnoodAccounts
+        )
+        expect(linked).toBe(true)
+      })
+      it('should return false if passed no accounts', () => {
+        // home = render(<Home {...props} />)
+        const linked = isYnabAccountLinked(
+          '4f8978af-dc34-4c45-bfda-5fb82925cb93',
+          []
         )
         expect(linked).toBe(true)
       })

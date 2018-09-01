@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { meta } from 'react-website'
 import {
   fetchYnabUser,
   fetchBudgetList,
