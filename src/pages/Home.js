@@ -936,13 +936,9 @@ export default connect(
 
 export const isYnabAccountLinked = (id, ynoodAccounts) => {
   // console.log('checking if Linked')
-  if (ynoodAccounts && ynoodAccounts.data) {
-    return _.find(
-      ynoodAccounts.data.accounts,
-      account => account.ynab_guid === id
-    )
+  return !ynoodAccounts || !ynoodAccounts.data || !ynoodAccounts.data.accounts
+    ? false
+    : _.find(ynoodAccounts.data.accounts, account => account.ynab_guid === id)
       ? true
       : false
-  }
-  return true
 }
