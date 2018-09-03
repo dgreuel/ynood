@@ -17,7 +17,7 @@ export const mockYnoodAccounts = {
         scheduled_payoff_date: '2033-05-01'
       },
       {
-        debt_id: 1,
+        debt_id: 2,
         ynab_guid: '4f8978af-dc34-4c45-bfda-5fb82925cb93-unsynced',
         nickname: 'Mortgage',
         current_balance: 135789,
@@ -32,7 +32,7 @@ export const mockYnoodAccounts = {
         scheduled_payoff_date: '2033-05-01'
       },
       {
-        debt_id: 2,
+        debt_id: 3,
         nickname: 'American Express',
         current_balance: 2342.33,
         highest_balance: 2342.33,

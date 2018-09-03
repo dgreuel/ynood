@@ -221,25 +221,10 @@ export class Home extends Component {
     return isYnabAccountSynced(id, { ynoodAccounts, ynabBudget })
   }
 
-  isYnoodAccountLinked = id => {
-    const { ynoodAccounts, ynabBudget } = this.props
-    if (ynoodAccounts && ynoodAccounts.data && ynabBudget && ynabBudget.data) {
-      const ynabGuid = _.find(
-        ynoodAccounts.data.accounts,
-        account => account.debt_id === id
-      ).ynab_guid
-      return ynabGuid === null ||
-        ynabGuid === undefined ||
-        ynabGuid === '\u0000' ||
-        _.find(
-          ynabBudget.data.budget.accounts,
-          account => account.id === ynabGuid
-        ) === null
-        ? false
-        : true
-    }
-    return true
+  isYnoodAccountLinked = (id, { ynoodAccounts, ynabBudget } = this.props) => {
+    return isYnoodAccountLinked(id, { ynoodAccounts, ynabBudget })
   }
+
   syncYnabAccount = id => {
     // console.log(`syncing ynab account: ${id}`)
     const {
@@ -940,4 +925,25 @@ export const isYnabAccountSynced = (id, { ynoodAccounts, ynabBudget }) => {
       })
       ? true
       : false
+}
+
+export const isYnoodAccountLinked = (id, { ynoodAccounts, ynabBudget }) => {
+  const ynabGuid =
+    !ynoodAccounts ||
+    !ynoodAccounts.data ||
+    !ynabBudget ||
+    !ynabBudget.data ||
+    !id
+      ? null
+      : _.find(ynoodAccounts.data.accounts, account => account.debt_id === id)
+          .ynab_guid
+  return ynabGuid === null ||
+    ynabGuid === undefined ||
+    ynabGuid === '\u0000' ||
+    _.find(
+      ynabBudget.data.budget.accounts,
+      account => account.id === ynabGuid
+    ) === null
+    ? false
+    : true
 }

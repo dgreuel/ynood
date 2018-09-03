@@ -1,4 +1,9 @@
-import { Home, isYnabAccountLinked, isYnabAccountSynced } from '../pages/Home'
+import {
+  Home,
+  isYnabAccountLinked,
+  isYnabAccountSynced,
+  isYnoodAccountLinked
+} from '../pages/Home'
 import React from 'react'
 import { render, cleanup } from 'react-testing-library'
 import 'jest-dom/extend-expect'
@@ -133,6 +138,48 @@ describe('Home page', () => {
       })
       it('should return false if ynabBudget is undefined', () => {
         synced = isYnabAccountSynced('4f8978af-dc34-4c45-bfda-5fb82925cb93', {
+          ynoodAccounts: mockYnoodAccounts
+        })
+        expect(synced).toBe(false)
+      })
+    })
+    describe('isYnoodAccountLinked', () => {
+      it('should return true if passed a linked YNOOD account id', () => {
+        linked = isYnoodAccountLinked(1, {
+          ynoodAccounts: mockYnoodAccounts,
+          ynabBudget: mockYnabBudget
+        })
+        expect(linked).toBe(true)
+      })
+      it('should return false if passed an unlinked YNOOD account id', () => {
+        linked = isYnoodAccountLinked(3, {
+          ynoodAccounts: mockYnoodAccounts,
+          ynabBudget: mockYnabBudget
+        })
+        expect(linked).toBe(false)
+      })
+      it('should return false if id is null', () => {
+        synced = isYnoodAccountLinked(null, {
+          ynoodAccounts: mockYnoodAccounts,
+          ynabBudget: mockYnabBudget
+        })
+        expect(synced).toBe(false)
+      })
+      it('should return false if id is undefined', () => {
+        synced = isYnoodAccountLinked(undefined, {
+          ynoodAccounts: mockYnoodAccounts,
+          ynabBudget: mockYnabBudget
+        })
+        expect(synced).toBe(false)
+      })
+      it('should return false if ynoodAccounts is undefined', () => {
+        synced = isYnoodAccountLinked(1, {
+          ynabBudget: mockYnabBudget
+        })
+        expect(synced).toBe(false)
+      })
+      it('should return false if ynabBudget is undefined', () => {
+        synced = isYnoodAccountLinked(1, {
           ynoodAccounts: mockYnoodAccounts
         })
         expect(synced).toBe(false)
