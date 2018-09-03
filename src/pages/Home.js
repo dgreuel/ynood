@@ -340,7 +340,8 @@ export class Home extends Component {
                       (index % 2 === 0 ? 'greyBackground' : 'whiteBackground') +
                       (hoveredOverAccount !== null &&
                       account.id !== null &&
-                      hoveredOverAccount === account.id
+                      hoveredOverAccount === account.id &&
+                      this.isYnabAccountLinked(account.id)
                         ? ' highlighted'
                         : '')
                     }
