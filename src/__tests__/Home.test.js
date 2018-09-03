@@ -1,43 +1,9 @@
-import { Home, isYnabAccountLinked } from './Home'
+import { Home, isYnabAccountLinked, isYnabAccountSynced } from '../pages/Home'
 import React from 'react'
 import { render, cleanup } from 'react-testing-library'
 import 'jest-dom/extend-expect'
+import { mockYnabBudget, mockYnoodAccounts } from './MockData'
 
-const mockYnoodAccounts = {
-  data: {
-    accounts: [
-      {
-        debt_id: 1,
-        ynab_guid: '4f8978af-dc34-4c45-bfda-5fb82925cb93',
-        nickname: 'Mortgage',
-        current_balance: 135789,
-        highest_balance: 135789,
-        interest_rate: 3.4,
-        next_due_date: '2018-09-01',
-        credit_limit: 0,
-        minimum_payment: 233,
-        active: 1,
-        planned_payment_this_month: 233,
-        planned_payment_next_month: 233,
-        scheduled_payoff_date: '2033-05-01'
-      },
-      {
-        debt_id: 2,
-        nickname: 'American Express',
-        current_balance: 2342.33,
-        highest_balance: 2342.33,
-        interest_rate: 15.99,
-        next_due_date: '2018-09-09',
-        credit_limit: 0,
-        minimum_payment: 50,
-        active: 1,
-        planned_payment_this_month: 50,
-        planned_payment_next_month: 767,
-        scheduled_payoff_date: '2018-12-01'
-      }
-    ]
-  }
-}
 const props = {
   fetchYnabUser: {},
   fetchBudgetList: {},
@@ -59,12 +25,14 @@ const props = {
 
 describe('Home page', () => {
   let home = null
-  let linked = null
+  let linked,
+    synced = null
   expect(home).toBeNull()
   describe('accounts', () => {
     beforeEach(() => {
       home = render(<Home {...props} />)
       linked = null
+      synced = null
     })
     afterEach(cleanup)
     describe('isYnabAccountLinked', () => {
@@ -77,7 +45,7 @@ describe('Home page', () => {
       })
       it('should return false if passed an unlinked YNAB GUID', () => {
         linked = isYnabAccountLinked(
-          '4f8978af-dc34-4c45-bfda-5fb82925cb94',
+          '4f8978af-dc34-4c45-bfda-5fb82925cb93-unlinked',
           mockYnoodAccounts
         )
         expect(linked).toBe(false)
@@ -113,6 +81,61 @@ describe('Home page', () => {
       it('should return false if GUID is a boolean', () => {
         linked = isYnabAccountLinked(true, mockYnoodAccounts)
         expect(linked).toBe(false)
+      })
+    })
+    describe('isYnabAccountSynced', () => {
+      it('should return true if YNAB balance equals YNOOD balance', () => {
+        synced = isYnabAccountSynced('4f8978af-dc34-4c45-bfda-5fb82925cb93', {
+          ynoodAccounts: mockYnoodAccounts,
+          ynabBudget: mockYnabBudget
+        })
+        expect(synced).toBe(true)
+      })
+      it('should return false if YNAB balance does not equal YNOOD balance', () => {
+        synced = isYnabAccountSynced(
+          '4f8978af-dc34-4c45-bfda-5fb82925cb93-unsynced',
+          {
+            ynoodAccounts: mockYnoodAccounts,
+            ynabBudget: mockYnabBudget
+          }
+        )
+        expect(synced).toBe(false)
+      })
+      it('should return false if account is unlinked', () => {
+        synced = isYnabAccountSynced(
+          '4f8978af-dc34-4c45-bfda-5fb82925cb93-unlinked',
+          {
+            ynoodAccounts: mockYnoodAccounts,
+            ynabBudget: mockYnabBudget
+          }
+        )
+        expect(synced).toBe(false)
+      })
+      it('should return false if GUID is null', () => {
+        synced = isYnabAccountSynced(null, {
+          ynoodAccounts: mockYnoodAccounts,
+          ynabBudget: mockYnabBudget
+        })
+        expect(synced).toBe(false)
+      })
+      it('should return false if GUID is undefined', () => {
+        synced = isYnabAccountSynced(undefined, {
+          ynoodAccounts: mockYnoodAccounts,
+          ynabBudget: mockYnabBudget
+        })
+        expect(synced).toBe(false)
+      })
+      it('should return false if ynoodAccounts is undefined', () => {
+        synced = isYnabAccountSynced('4f8978af-dc34-4c45-bfda-5fb82925cb93', {
+          ynabBudget: mockYnabBudget
+        })
+        expect(synced).toBe(false)
+      })
+      it('should return false if ynabBudget is undefined', () => {
+        synced = isYnabAccountSynced('4f8978af-dc34-4c45-bfda-5fb82925cb93', {
+          ynoodAccounts: mockYnoodAccounts
+        })
+        expect(synced).toBe(false)
       })
     })
   })

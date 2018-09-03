@@ -217,29 +217,8 @@ export class Home extends Component {
   isYnabAccountLinked = (id, { ynoodAccounts } = this.props) => {
     return isYnabAccountLinked(id, ynoodAccounts)
   }
-
-  isYnabAccountSynced = id => {
-    // console.log('checking if Synced')
-    const { ynoodAccounts, ynabBudget } = this.props
-    const ynabAccount = _.find(
-      ynabBudget.data.budget.accounts,
-      account => account.id === id
-    )
-    let balance = null
-    if (ynabAccount) {
-      balance = ynabAccount.balance
-    }
-    if (ynoodAccounts && ynoodAccounts.data && balance) {
-      return _.find(ynoodAccounts.data.accounts, account => {
-        return (
-          account.ynab_guid === id &&
-          account.current_balance === balance / -1000
-        )
-      })
-        ? true
-        : false
-    }
-    return true
+  isYnabAccountSynced = (id, { ynoodAccounts, ynabBudget } = this.props) => {
+    return isYnabAccountSynced(id, { ynoodAccounts, ynabBudget })
   }
 
   isYnoodAccountLinked = id => {
@@ -939,6 +918,26 @@ export const isYnabAccountLinked = (id, ynoodAccounts) => {
   return !ynoodAccounts || !ynoodAccounts.data || !ynoodAccounts.data.accounts
     ? false
     : _.find(ynoodAccounts.data.accounts, account => account.ynab_guid === id)
+      ? true
+      : false
+}
+
+export const isYnabAccountSynced = (id, { ynoodAccounts, ynabBudget }) => {
+  // console.log('checking if Synced')
+  const ynabAccount =
+    !ynabBudget || !ynabBudget.data
+      ? null
+      : _.find(ynabBudget.data.budget.accounts, account => account.id === id)
+  let balance = ynabAccount ? ynabAccount.balance : null
+
+  return !ynoodAccounts || !ynoodAccounts.data || !balance
+    ? false
+    : _.find(ynoodAccounts.data.accounts, account => {
+        return (
+          account.ynab_guid === id &&
+          account.current_balance === balance / -1000
+        )
+      })
       ? true
       : false
 }
