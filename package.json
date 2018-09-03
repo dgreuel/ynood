@@ -80,6 +80,7 @@
   },
   "jest": {
     "setupTestFrameworkScriptFile": "mock-local-storage",
+    "collectCoverage": true,
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,mjs}"
     ],
