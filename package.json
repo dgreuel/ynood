@@ -30,7 +30,6 @@
     "history": "3.3.0",
     "html-webpack-plugin": "2.29.0",
     "informed": "^1.10.4",
-    "jest": "20.0.4",
     "lodash": "^4.17.10",
     "mdbreact": "^4.6.0",
     "moment": "^2.22.2",
@@ -59,6 +58,7 @@
   },
   "devDependencies": {
     "@cypress/browserify-preprocessor": "^1.1.0",
+    "@types/jest": "^23.3.1",
     "babel": "^6.23.0",
     "babel-plugin-react-hot-loader": "^3.0.0-beta.6",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -69,6 +69,7 @@
     "cypress": "^3.1.0",
     "jest-dom": "^1.12.0",
     "mock-local-storage": "^1.0.5",
+    "react-scripts": "react-scripts@2.0.0-next.a671462c",
     "react-testing-library": "^5.0.0",
     "redux-mock-store": "^1.5.3"
   },

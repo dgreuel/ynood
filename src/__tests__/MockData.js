@@ -1785,9 +1785,30 @@ export const mockYnabBudget = {
   }
 }
 
+export const mockYnabUser = {
+  data: {
+    user: {
+      id: 'd0160418-7f1c-467a-b9fe-7aa2d1ca37a5'
+    }
+  }
+}
+
+export const mockYnoodUser = {
+  undebt_user_id: 65187,
+  user_name: '',
+  email: 'test@test.com',
+  total_monthly_payment: 1000,
+  payoff_date: '2033-05-01',
+  member_number: 'd0160418-7f1c-467a-b9fe-7aa2d1ca37a5',
+  verify_key: 'xt0ry6a778',
+  payoff_method: 2
+}
+
 describe('Mock Data', () => {
   it('should define all necessary mock data', () => {
     expect(mockYnabBudget).toBeTruthy()
     expect(mockYnoodAccounts).toBeTruthy()
+    expect(mockYnabUser).toBeTruthy()
+    expect(mockYnoodUser).toBeTruthy()
   })
 })

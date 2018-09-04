@@ -2,12 +2,18 @@ import {
   Home,
   isYnabAccountLinked,
   isYnabAccountSynced,
-  isYnoodAccountLinked
+  isYnoodAccountLinked,
+  syncYnabAccount
 } from '../pages/Home'
 import React from 'react'
 import { render, cleanup } from 'react-testing-library'
 import 'jest-dom/extend-expect'
-import { mockYnabBudget, mockYnoodAccounts } from './MockData'
+import {
+  mockYnabBudget,
+  mockYnoodAccounts,
+  mockYnabUser,
+  mockYnoodUser
+} from './MockData'
 
 const props = {
   fetchYnabUser: {},
@@ -29,10 +35,8 @@ const props = {
 }
 
 describe('Home page', () => {
-  let home = null
-  let linked,
-    synced = null
-  expect(home).toBeNull()
+  let home, linked, synced
+  expect(home).toBeUndefined()
   describe('accounts', () => {
     beforeEach(() => {
       home = render(<Home {...props} />)
@@ -183,6 +187,87 @@ describe('Home page', () => {
           ynoodAccounts: mockYnoodAccounts
         })
         expect(synced).toBe(false)
+      })
+    })
+    describe('syncYnabAccount', () => {
+      let mockUpdateYnoodAccountBalance,
+        mockFetchYnoodAccounts,
+        mockFetchYnoodUser,
+        syncYnabAccountParams = null
+      beforeEach(() => {
+        jest.useFakeTimers()
+        mockUpdateYnoodAccountBalance = jest
+          .fn()
+          .mockReturnValueOnce(Promise.resolve({ rows_affected: 1 }))
+          .mockReturnValueOnce(Promise.resolve({ rows_affected: 0 }))
+          .mockName('mockUpdateYnoodAccountBalance')
+        mockFetchYnoodUser = jest
+          .fn()
+          .mockName('mockFetchYnoodUser')
+          .mockReturnValue(mockYnoodUser)
+        mockFetchYnoodAccounts = jest
+          .fn()
+          .mockReturnValueOnce(Promise.resolve(mockYnoodAccounts))
+          .mockName('mockFetchYnoodAccounts')
+        syncYnabAccountParams = [
+          '4f8978af-dc34-4c45-bfda-5fb82925cb93-unsynced',
+          {
+            ynoodAccounts: mockYnoodAccounts,
+            ynabBudget: mockYnabBudget,
+            updateYnoodAccountBalance: mockUpdateYnoodAccountBalance,
+            fetchYnoodAccounts: mockFetchYnoodAccounts,
+            ynoodUser: mockYnoodUser,
+            ynabUser: mockYnabUser,
+            fetchYnoodUser: mockFetchYnoodUser
+          }
+        ]
+      })
+      it('should call updateYnoodAccountBalance once with the right parameters', () => {
+        syncYnabAccount(...syncYnabAccountParams)
+        expect(mockUpdateYnoodAccountBalance).toHaveBeenCalledTimes(1)
+        expect(mockUpdateYnoodAccountBalance).toHaveBeenCalledWith(
+          65187,
+          2,
+          125789
+        )
+      })
+      it('should call fetchYnoodAccounts once with the right parameter', () => {
+        expect.assertions(1)
+        return syncYnabAccount(...syncYnabAccountParams)
+          .then(result => expect(result).toEqual('success'))
+          .catch(error => {
+            throw new Error(error)
+          })
+      })
+      it('should reject if fetchYnoodAccounts is called twice', () => {
+        expect.assertions(1)
+        syncYnabAccount(...syncYnabAccountParams)
+        return syncYnabAccount(...syncYnabAccountParams)
+          .then(result => {})
+          .catch(error => {
+            expect(error).toEqual('no change was made')
+          })
+      })
+
+      it('should call fetchYnoodUser once with the right parameter', () => {
+        expect.assertions(5)
+        return syncYnabAccount(...syncYnabAccountParams)
+          .then(result => {
+            expect(result).toEqual('success')
+            // At this point in time, the callback should not have been called yet
+            expect(mockFetchYnoodUser).not.toBeCalled()
+            // Fast-forward until all timers have been executed
+            jest.runAllTimers()
+            // Now our callback should have been called!
+            expect(mockFetchYnoodUser).toBeCalled()
+            expect(mockFetchYnoodUser).toHaveBeenCalledTimes(1)
+            expect(mockFetchYnoodUser).toHaveBeenLastCalledWith(
+              'd0160418-7f1c-467a-b9fe-7aa2d1ca37a5'
+            )
+          })
+          .catch(error => {
+            throw new Error(error)
+          })
       })
     })
   })

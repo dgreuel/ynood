@@ -225,9 +225,9 @@ export class Home extends Component {
     return isYnoodAccountLinked(id, { ynoodAccounts, ynabBudget })
   }
 
-  syncYnabAccount = id => {
-    // console.log(`syncing ynab account: ${id}`)
-    const {
+  syncYnabAccount = (
+    id,
+    {
       ynoodAccounts,
       ynabBudget,
       updateYnoodAccountBalance,
@@ -236,31 +236,16 @@ export class Home extends Component {
       ynabUser,
       fetchYnoodUser
     } = this.props
-    if (ynoodAccounts && ynoodAccounts.data) {
-      const ynabAccount = _.find(
-        ynabBudget.data.budget.accounts,
-        account => account.id === id
-      )
-      const linkedYnoodAccount = _.find(
-        ynoodAccounts.data.accounts,
-        account => account.ynab_guid === id
-      )
-      const linkedYnoodAccountID = linkedYnoodAccount.debt_id
-      updateYnoodAccountBalance(
-        ynoodUser.undebt_user_id,
-        linkedYnoodAccountID,
-        ynabAccount.balance / -1000
-      ).then(result => {
-        // console.log(result)
-        if (result.rows_affected === 1) {
-          fetchYnoodAccounts(ynoodUser.undebt_user_id).then(
-            setTimeout(fetchYnoodUser, 30000, ynabUser.data.user.id)
-          )
-        } else {
-          console.log('no change was made')
-        }
-      })
-    }
+  ) => {
+    syncYnabAccount(id, {
+      ynoodAccounts,
+      ynabBudget,
+      updateYnoodAccountBalance,
+      fetchYnoodAccounts,
+      ynoodUser,
+      ynabUser,
+      fetchYnoodUser
+    })
   }
 
   ynabAccountList = () => {
@@ -947,4 +932,53 @@ export const isYnoodAccountLinked = (id, { ynoodAccounts, ynabBudget }) => {
     ) === null
     ? false
     : true
+}
+
+export const syncYnabAccount = (
+  id,
+  {
+    ynoodAccounts,
+    ynabBudget,
+    updateYnoodAccountBalance,
+    fetchYnoodAccounts,
+    ynoodUser,
+    ynabUser,
+    fetchYnoodUser
+  }
+) => {
+  // console.log(`syncing ynab account: ${id}`)
+
+  if (ynoodAccounts && ynoodAccounts.data) {
+    const ynabAccount = _.find(
+      ynabBudget.data.budget.accounts,
+      account => account.id === id
+    )
+    const linkedYnoodAccount = _.find(
+      ynoodAccounts.data.accounts,
+      account => account.ynab_guid === id
+    )
+    const linkedYnoodAccountID = linkedYnoodAccount.debt_id
+
+    return new Promise((resolve, reject) => {
+      updateYnoodAccountBalance(
+        ynoodUser.undebt_user_id,
+        linkedYnoodAccountID,
+        ynabAccount.balance / -1000
+      )
+        .then(result => {
+          // console.log(result)
+          if (result.rows_affected === 1) {
+            fetchYnoodAccounts(ynoodUser.undebt_user_id).then(result => {
+              setTimeout(fetchYnoodUser, 30000, ynoodUser.member_number)
+              resolve('success')
+            })
+          } else if (result.rows_affected === 0) {
+            reject('no change was made')
+          } else {
+            reject('an error occurred')
+          }
+        })
+        .catch(error => console.error(error))
+    })
+  }
 }
