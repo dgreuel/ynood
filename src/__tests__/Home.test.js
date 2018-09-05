@@ -15,6 +15,7 @@ import {
   mockYnabUser,
   mockYnoodUser
 } from './MockData'
+import * as _ from 'lodash'
 
 const props = {
   fetchYnabUser: {},
@@ -240,7 +241,7 @@ describe('Home page', () => {
             throw new Error(error)
           })
       })
-      it('should reject if fetchYnoodAccounts is called twice', () => {
+      it('should reject if called twice', () => {
         expect.assertions(1)
         syncYnabAccount(...syncYnabAccountParams)
         return syncYnabAccount(...syncYnabAccountParams)
@@ -249,7 +250,34 @@ describe('Home page', () => {
             expect(error).toEqual('no change was made')
           })
       })
-
+      it('should reject if server responds unexpectedly', () => {
+        expect.assertions(2)
+        let modifiedParams = _.cloneDeep(syncYnabAccountParams)
+        const respondUnexpectedly = jest
+          .fn()
+          .mockReturnValueOnce(Promise.resolve({ something: 'unexpected' }))
+        modifiedParams[1].updateYnoodAccountBalance = respondUnexpectedly
+        return syncYnabAccount(...modifiedParams)
+          .then(result => {})
+          .catch(error => {
+            expect(respondUnexpectedly).toHaveBeenCalled()
+            expect(error).toEqual('an error occurred')
+          })
+      })
+      it('should reject if there is an error with the request', () => {
+        expect.assertions(2)
+        let modifiedParams = _.cloneDeep(syncYnabAccountParams)
+        const respondWithError = jest
+          .fn()
+          .mockReturnValueOnce(Promise.reject('fetch error'))
+        modifiedParams[1].updateYnoodAccountBalance = respondWithError
+        return syncYnabAccount(...modifiedParams)
+          .then(result => {})
+          .catch(error => {
+            expect(respondWithError).toHaveBeenCalled()
+            expect(error).toEqual('fetch error')
+          })
+      })
       it('should call fetchYnoodUser once with the right parameter', () => {
         expect.assertions(5)
         return syncYnabAccount(...syncYnabAccountParams)

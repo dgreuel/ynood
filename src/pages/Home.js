@@ -971,7 +971,10 @@ export const syncYnabAccount = (
             reject('an error occurred')
           }
         })
-        .catch(error => console.error(error))
+        .catch(error => {
+          console.error(error)
+          reject(error)
+        })
     })
   }
 }
