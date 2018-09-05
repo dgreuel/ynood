@@ -51,7 +51,10 @@ Object {
                   class="row"
                 >
                   <div
-                    class="col-md-6"
+                    class="col-md-1"
+                  />
+                  <div
+                    class="col-md-10"
                   >
                     <form
                       id="register-form"
@@ -80,15 +83,32 @@ Object {
                           name="budget"
                           value=""
                         />
-                        <button
-                          class="btn btn-outline-purple"
-                          type="submit"
-                        >
-                          Submit
-                        </button>
                       </div>
                     </form>
                   </div>
+                  <div
+                    class="col-md-1"
+                  />
+                </div>
+                <div
+                  class="row"
+                >
+                  <div
+                    class="col-md-1"
+                  />
+                  <div
+                    class="col-md-10"
+                  >
+                    <button
+                      class="btn btn-outline-purple"
+                      type="submit"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                  <div
+                    class="col-md-1"
+                  />
                 </div>
               </div>
             </div>
@@ -149,7 +169,10 @@ Object {
                 class="row"
               >
                 <div
-                  class="col-md-6"
+                  class="col-md-1"
+                />
+                <div
+                  class="col-md-10"
                 >
                   <form
                     id="register-form"
@@ -178,15 +201,32 @@ Object {
                         name="budget"
                         value=""
                       />
-                      <button
-                        class="btn btn-outline-purple"
-                        type="submit"
-                      >
-                        Submit
-                      </button>
                     </div>
                   </form>
                 </div>
+                <div
+                  class="col-md-1"
+                />
+              </div>
+              <div
+                class="row"
+              >
+                <div
+                  class="col-md-1"
+                />
+                <div
+                  class="col-md-10"
+                >
+                  <button
+                    class="btn btn-outline-purple"
+                    type="submit"
+                  >
+                    Submit
+                  </button>
+                </div>
+                <div
+                  class="col-md-1"
+                />
               </div>
             </div>
           </div>

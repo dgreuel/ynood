@@ -11,7 +11,8 @@ export default class Register extends React.Component {
         </p>
         <Container>
           <Row>
-            <Col md="6">
+            <Col md="1" />
+            <Col md="10">
               <Form
                 id="register-form"
                 onSubmit={values =>
@@ -52,13 +53,20 @@ export default class Register extends React.Component {
                       validateOnBlur
                       validateOnChange
                     />
-                    <button type="submit" className="btn btn-outline-purple">
-                      Submit
-                    </button>
                   </div>
                 )}
               </Form>
             </Col>
+            <Col md="1" />
+          </Row>
+          <Row>
+            <Col md="1" />
+            <Col md="10">
+              <button type="submit" className="btn btn-outline-purple">
+                Submit
+              </button>
+            </Col>
+            <Col md="1" />
           </Row>
         </Container>
       </div>
