@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home page should render correctly 1`] = `
+Object {
+  "baseElement": <body>
+    <div>
+      <div
+        class="accounts"
+      >
+        <div
+          class="ynabSide"
+        >
+          <div>
+            <p
+              class="h5 text-center mb-4"
+            >
+              Step 1: Connect to YNAB
+            </p>
+            <button
+              class="btn btn-lg btn-default"
+            >
+              Log In to YNAB
+            </button>
+            <a
+              href="https://ynab.com/referral/?ref=NJEogaRL6Tux6JIm&utm_source=customer_referral"
+            >
+              <button
+                class="btn btn-lg btn-elegant"
+              >
+                Sign up for YNAB
+              </button>
+            </a>
+          </div>
+        </div>
+        <div
+          class="ynoodSide"
+        >
+          <div>
+            <div
+              class="register"
+            >
+              <p
+                class="h5 text-center mb-4"
+              >
+                Step 2: Register for a YNOOD Account
+              </p>
+              <div
+                class="container"
+              >
+                <div
+                  class="row"
+                >
+                  <div
+                    class="col-md-6"
+                  >
+                    <form
+                      id="register-form"
+                    >
+                      <div>
+                        <label
+                          for="register-email"
+                        >
+                          Email:
+                        </label>
+                        <input
+                          class="form-control"
+                          id="register-email"
+                          name="email"
+                          value=""
+                        />
+                        <br />
+                        <label
+                          for="register-budget"
+                        >
+                          Monthly debt payoff budget:
+                        </label>
+                        <input
+                          class="form-control"
+                          id="register-budget"
+                          name="budget"
+                          value=""
+                        />
+                        <button
+                          class="btn btn-outline-purple"
+                          type="submit"
+                        >
+                          Submit
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div
+            id="ynoodAccounts"
+          />
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="accounts"
+    >
+      <div
+        class="ynabSide"
+      >
+        <div>
+          <p
+            class="h5 text-center mb-4"
+          >
+            Step 1: Connect to YNAB
+          </p>
+          <button
+            class="btn btn-lg btn-default"
+          >
+            Log In to YNAB
+          </button>
+          <a
+            href="https://ynab.com/referral/?ref=NJEogaRL6Tux6JIm&utm_source=customer_referral"
+          >
+            <button
+              class="btn btn-lg btn-elegant"
+            >
+              Sign up for YNAB
+            </button>
+          </a>
+        </div>
+      </div>
+      <div
+        class="ynoodSide"
+      >
+        <div>
+          <div
+            class="register"
+          >
+            <p
+              class="h5 text-center mb-4"
+            >
+              Step 2: Register for a YNOOD Account
+            </p>
+            <div
+              class="container"
+            >
+              <div
+                class="row"
+              >
+                <div
+                  class="col-md-6"
+                >
+                  <form
+                    id="register-form"
+                  >
+                    <div>
+                      <label
+                        for="register-email"
+                      >
+                        Email:
+                      </label>
+                      <input
+                        class="form-control"
+                        id="register-email"
+                        name="email"
+                        value=""
+                      />
+                      <br />
+                      <label
+                        for="register-budget"
+                      >
+                        Monthly debt payoff budget:
+                      </label>
+                      <input
+                        class="form-control"
+                        id="register-budget"
+                        name="budget"
+                        value=""
+                      />
+                      <button
+                        class="btn btn-outline-purple"
+                        type="submit"
+                      >
+                        Submit
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div
+          id="ynoodAccounts"
+        />
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "getAllByAltText": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getAllByValue": [Function],
+  "getByAltText": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "getByValue": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryAllByValue": [Function],
+  "queryByAltText": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "queryByValue": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
