@@ -4,7 +4,7 @@ import {
   isYnoodAccountLinked,
   syncYnabAccount,
   isDebtAccount
-} from '../pages/Accounts'
+} from '../Accounts'
 import 'jest-dom/extend-expect'
 import {
   mockYnabBudget,
