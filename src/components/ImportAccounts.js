@@ -1,7 +1,7 @@
 import { Form, Text, Scope } from 'informed'
 import React from 'react'
 import { Container, Col, Row } from 'mdbreact'
-import { isDebtAccount } from './Home'
+import { isDebtAccount } from '../pages/Home'
 import * as accounting from 'accounting'
 import './ImportAccounts.css'
 
@@ -17,8 +17,9 @@ export default class ImportAccounts extends React.Component {
               <Form
                 id="import-form"
                 onSubmit={values =>
-                 importFunction(values, userID)
-                    .then(result=>fetchFunction(userID))
+                  importFunction(values, userID).then(result =>
+                    fetchFunction(userID)
+                  )
                 }
               >
                 {({ formApi }) => (

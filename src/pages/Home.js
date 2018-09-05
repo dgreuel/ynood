@@ -22,7 +22,8 @@ import {
   isYnoodAccountLinked,
   syncYnabAccount,
   isDebtAccount
-} from './Accounts'
+} from '../Accounts'
+import { resetToken, findYnabToken, authorizeWithYnab } from '../OAuth'
 import * as accounting from 'accounting'
 import * as _ from 'lodash'
 import MdRefresh from 'react-icons/lib/md/refresh'
@@ -37,8 +38,8 @@ import IoLogOut from 'react-icons/lib/io/log-out'
 import * as queryString from '../deps/query-string'
 import { DotLoader, BeatLoader } from 'react-spinners'
 import moment from 'moment'
-import Register from './Register'
-import ImportAccounts from './ImportAccounts'
+import Register from '../components/Register'
+import ImportAccounts from '../components/ImportAccounts'
 
 export class Home extends Component {
   constructor() {
@@ -50,7 +51,7 @@ export class Home extends Component {
         rightToLeft: false,
         accountToLink: ''
       },
-      ynabToken: this.findYnabToken()
+      ynabToken: findYnabToken()
     }
   }
   registerForYnood(email, ynabID) {
@@ -127,43 +128,7 @@ export class Home extends Component {
       })
     }
   }
-  authorizeWithYnab(e) {
-    e.preventDefault()
-    const uri = `https://app.youneedabudget.com/oauth/authorize?client_id=${
-      process.env.REACT_APP_ynabClientID
-    }&redirect_uri=${
-      process.env[`REACT_APP_ynabRedirectURI_${process.env.NODE_ENV}`]
-    }&response_type=token`
-    window.location.replace(uri)
-  }
 
-  // Method to find a YNAB token
-  // First it looks in the location.hash and then sessionStorage
-  findYnabToken() {
-    let token = null
-    const search = window.location.hash
-      .substring(1)
-      .replace(/&/g, '","')
-      .replace(/=/g, '":"')
-    if (search && search !== '') {
-      // Try to get access_token from the hash returned by OAuth
-      const params = JSON.parse('{"' + search + '"}', function(key, value) {
-        return key === '' ? value : decodeURIComponent(value)
-      })
-      token = params.access_token
-      sessionStorage.setItem('ynab_access_token', token)
-      window.location.hash = ''
-    } else {
-      // Otherwise try sessionStorage
-      token = sessionStorage.getItem('ynab_access_token')
-    }
-    return token
-  }
-  // Clear the token and start authorization over
-  resetToken() {
-    sessionStorage.removeItem('ynab_access_token')
-    this.setState({ ynabToken: null })
-  }
   budgetPicker = () => {
     const { budgets, fetchBudgetList, fetchBudgetsPending } = this.props
 
@@ -204,6 +169,7 @@ export class Home extends Component {
 
     return ''
   }
+
   updateSelectedBudget = () => {
     const { fetchBudget, ynabBudget } = this.props
     const selection = document.getElementById('budgetPicker').value
@@ -224,6 +190,7 @@ export class Home extends Component {
   isYnabAccountLinked = (id, { ynoodAccounts } = this.props) => {
     return isYnabAccountLinked(id, ynoodAccounts)
   }
+
   isYnabAccountSynced = (id, { ynoodAccounts, ynabBudget } = this.props) => {
     return isYnabAccountSynced(id, { ynoodAccounts, ynabBudget })
   }
@@ -521,6 +488,7 @@ export class Home extends Component {
     }
     return ''
   }
+
   YnoodAccountList = () => {
     const {
       ynoodAccounts,
@@ -743,9 +711,11 @@ export class Home extends Component {
     }
     return ''
   }
+
   whenDebtFree = payoff_date => {
     return (payoff_date = moment(payoff_date).fromNow())
   }
+
   render() {
     return (
       <div className="accounts">
@@ -755,7 +725,7 @@ export class Home extends Component {
               <p className="h5 text-center mb-4">Step 1: Connect to YNAB</p>
               <button
                 className="btn btn-lg btn-default"
-                onClick={this.authorizeWithYnab.bind(this)}
+                onClick={authorizeWithYnab.bind(this)}
               >
                 Log In to YNAB
               </button>
@@ -771,7 +741,7 @@ export class Home extends Component {
               <div>{this.budgetPicker.bind(this)()}</div>
               <button
                 className="btn btn-sm btn-outline-default logout"
-                onClick={this.resetToken.bind(this)}
+                onClick={resetToken.bind(this)}
               >
                 <span style={{ fontSize: '16px' }}>
                   <IoLogOut />
