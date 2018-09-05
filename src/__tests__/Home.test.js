@@ -3,7 +3,8 @@ import {
   isYnabAccountLinked,
   isYnabAccountSynced,
   isYnoodAccountLinked,
-  syncYnabAccount
+  syncYnabAccount,
+  isDebtAccount
 } from '../pages/Home'
 import React from 'react'
 import { render, cleanup } from 'react-testing-library'
@@ -268,6 +269,40 @@ describe('Home page', () => {
           .catch(error => {
             throw new Error(error)
           })
+      })
+    })
+    describe('isDebtAccount', () => {
+      let account
+      beforeEach(() => {
+        account = null
+      })
+      it('should return true if passed a credit card account', () => {
+        account = mockYnabBudget.data.budget.accounts[0]
+        expect(isDebtAccount(account)).toBe(true)
+      })
+      it('should return true if passed an otherLiability account', () => {
+        account = mockYnabBudget.data.budget.accounts[1]
+        expect(isDebtAccount(account)).toBe(true)
+      })
+      it('should return false if the account is deleted', () => {
+        account = _.clone(mockYnabBudget.data.budget.accounts[0])
+        account.deleted = true
+        expect(isDebtAccount(account)).toBe(false)
+      })
+      it('should return false if the account is closed', () => {
+        account = _.clone(mockYnabBudget.data.budget.accounts[0])
+        account.closed = true
+        expect(isDebtAccount(account)).toBe(false)
+      })
+      it('should return false if there is no balance', () => {
+        account = _.clone(mockYnabBudget.data.budget.accounts[0])
+        account.balance = 0
+        expect(isDebtAccount(account)).toBe(false)
+      })
+      it('should return false if there is a positive balance (credit)', () => {
+        account = _.clone(mockYnabBudget.data.budget.accounts[0])
+        account.balance = 100
+        expect(isDebtAccount(account)).toBe(false)
       })
     })
   })

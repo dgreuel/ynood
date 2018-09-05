@@ -857,14 +857,7 @@ export class Home extends Component {
     )
   }
 }
-export const isDebtAccount = account => {
-  return (
-    account.deleted === false &&
-    account.closed === false &&
-    (account.type === 'creditCard' || account.type === 'otherLiability') &&
-    account.balance < 0
-  )
-}
+
 export default connect(
   ({ homePage }) => connectBudgets(homePage),
   {
@@ -981,4 +974,13 @@ export const syncYnabAccount = (
         .catch(error => console.error(error))
     })
   }
+}
+
+export const isDebtAccount = account => {
+  return (
+    account.deleted === false &&
+    account.closed === false &&
+    (account.type === 'creditCard' || account.type === 'otherLiability') &&
+    account.balance < 0
+  )
 }
