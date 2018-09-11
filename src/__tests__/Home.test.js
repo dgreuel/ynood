@@ -1,7 +1,7 @@
 import { Home } from '../pages/Home'
 import React from 'react'
-import { render, cleanup } from 'react-testing-library'
 import 'jest-dom/extend-expect'
+import renderer from 'react-test-renderer'
 
 const props = {
   fetchYnabUser: {},
@@ -22,13 +22,15 @@ const props = {
   ynabUser: {}
 }
 
+let tree
+
 describe('Home page', () => {
-  let home
-  beforeEach(() => {
-    home = render(<Home {...props} />)
+  beforeAll(() => {
+    tree = renderer.create(<Home {...props} />)
   })
-  afterEach(cleanup)
+
   it('should render correctly', () => {
-    expect(home).toMatchSnapshot()
+    console.log(tree)
+    expect(tree).toMatchSnapshot()
   })
 })
