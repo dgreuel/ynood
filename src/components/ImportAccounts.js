@@ -1,11 +1,11 @@
 import { Form, Text, Scope } from 'informed'
 import React from 'react'
 import { Container, Col, Row } from 'mdbreact'
-import { isDebtAccount } from '../pages/Home'
+import { isDebtAccount } from '../Accounts'
 import * as accounting from 'accounting'
 import './ImportAccounts.css'
 
-export default class ImportAccounts extends React.Component {
+export class ImportAccounts extends React.Component {
   render() {
     const { userID, importFunction, fetchFunction } = this.props
     return (

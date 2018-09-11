@@ -1,0 +1,519 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ImportAccounts component renders correctly 1`] = `
+<div
+  className="import"
+>
+  <p
+    className="h5 text-center mb-4"
+  >
+    Step 3: Enter Debt Details
+  </p>
+  <div
+    className="container"
+  >
+    <div
+      className="row"
+    >
+      <div
+        className="col-md-12"
+      >
+        <form
+          id="import-form"
+          onReset={[Function]}
+          onSubmit={[Function]}
+        >
+          <div
+            className="import-form"
+          >
+            <div
+              className="import-form-account"
+            >
+              <div
+                className="account-left"
+              >
+                <input
+                  id="account-0-id"
+                  name="id"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value="575ab9b3-d2cc-4e9b-a7fa-c1b9caf937b0"
+                />
+                <input
+                  id="account-0-balance"
+                  name="balance"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value={2342.33}
+                />
+                <input
+                  id="account-0-name"
+                  name="name"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value="American Express"
+                />
+                <div>
+                  American Express
+                </div>
+                <div
+                  className="balance"
+                >
+                  $2,342.33
+                </div>
+              </div>
+              <div
+                className="account-right"
+              >
+                <div>
+                  <label
+                    className="import-form-label"
+                    htmlFor="account-0-interestrate"
+                  >
+                    Interest Rate
+                  </label>
+                  <input
+                    className={null}
+                    id="account-0-interestrate"
+                    name="interestrate"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="account-0-interestrate"
+                  >
+                    Min. Monthly Payment
+                  </label>
+                  <input
+                    className={null}
+                    id="account-0-minimumpayment"
+                    name="minimumpayment"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="account-0-nextduedate"
+                  >
+                    Next Due Date
+                  </label>
+                  <input
+                    className={null}
+                    id="account-0-nextduedate"
+                    name="nextduedate"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              className="import-form-account"
+            >
+              <div
+                className="account-left"
+              >
+                <input
+                  id="account-1-id"
+                  name="id"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value="4f8978af-dc34-4c45-bfda-5fb82925cb93"
+                />
+                <input
+                  id="account-1-balance"
+                  name="balance"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value={135789}
+                />
+                <input
+                  id="account-1-name"
+                  name="name"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value="Mortgage"
+                />
+                <div>
+                  Mortgage
+                </div>
+                <div
+                  className="balance"
+                >
+                  $135,789.00
+                </div>
+              </div>
+              <div
+                className="account-right"
+              >
+                <div>
+                  <label
+                    className="import-form-label"
+                    htmlFor="account-1-interestrate"
+                  >
+                    Interest Rate
+                  </label>
+                  <input
+                    className={null}
+                    id="account-1-interestrate"
+                    name="interestrate"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="account-1-interestrate"
+                  >
+                    Min. Monthly Payment
+                  </label>
+                  <input
+                    className={null}
+                    id="account-1-minimumpayment"
+                    name="minimumpayment"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="account-1-nextduedate"
+                  >
+                    Next Due Date
+                  </label>
+                  <input
+                    className={null}
+                    id="account-1-nextduedate"
+                    name="nextduedate"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              className="import-form-account"
+            >
+              <div
+                className="account-left"
+              >
+                <input
+                  id="account-2-id"
+                  name="id"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value="4f8978af-dc34-4c45-bfda-5fb82925cb93-unsynced"
+                />
+                <input
+                  id="account-2-balance"
+                  name="balance"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value={125789}
+                />
+                <input
+                  id="account-2-name"
+                  name="name"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  type="hidden"
+                  value="Mortgage"
+                />
+                <div>
+                  Mortgage
+                </div>
+                <div
+                  className="balance"
+                >
+                  $125,789.00
+                </div>
+              </div>
+              <div
+                className="account-right"
+              >
+                <div>
+                  <label
+                    className="import-form-label"
+                    htmlFor="account-2-interestrate"
+                  >
+                    Interest Rate
+                  </label>
+                  <input
+                    className={null}
+                    id="account-2-interestrate"
+                    name="interestrate"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="account-2-interestrate"
+                  >
+                    Min. Monthly Payment
+                  </label>
+                  <input
+                    className={null}
+                    id="account-2-minimumpayment"
+                    name="minimumpayment"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="account-2-nextduedate"
+                  >
+                    Next Due Date
+                  </label>
+                  <input
+                    className={null}
+                    id="account-2-nextduedate"
+                    name="nextduedate"
+                    onBlur={[Function]}
+                    onChange={[Function]}
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+            <button
+              className="btn btn-outline-purple"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+------------HTML PREVIEW---------------
+<div class="import">
+  <p class="h5 text-center mb-4">
+    Step 3: Enter Debt Details
+  </p>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <form id="import-form">
+          <div class="import-form">
+            <div class="import-form-account">
+              <div class="account-left">
+                <input
+                  id="account-0-id"
+                  name="id"
+                  type="hidden"
+                  value="575ab9b3-d2cc-4e9b-a7fa-c1b9caf937b0"
+                >
+                <input
+                  id="account-0-balance"
+                  name="balance"
+                  type="hidden"
+                >
+                <input
+                  id="account-0-name"
+                  name="name"
+                  type="hidden"
+                  value="American Express"
+                >
+                <div>
+                  American Express
+                </div>
+                <div class="balance">
+                  $2,342.33
+                </div>
+              </div>
+              <div class="account-right">
+                <div>
+                  <label
+                    class="import-form-label"
+                    for="account-0-interestrate"
+                  >
+                    Interest Rate
+                  </label>
+                  <input
+                    id="account-0-interestrate"
+                    name="interestrate"
+                    value=""
+                  >
+                </div>
+                <div>
+                  <label for="account-0-interestrate">
+                    Min. Monthly Payment
+                  </label>
+                  <input
+                    id="account-0-minimumpayment"
+                    name="minimumpayment"
+                    value=""
+                  >
+                </div>
+                <div>
+                  <label for="account-0-nextduedate">
+                    Next Due Date
+                  </label>
+                  <input
+                    id="account-0-nextduedate"
+                    name="nextduedate"
+                    value=""
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="import-form-account">
+              <div class="account-left">
+                <input
+                  id="account-1-id"
+                  name="id"
+                  type="hidden"
+                  value="4f8978af-dc34-4c45-bfda-5fb82925cb93"
+                >
+                <input
+                  id="account-1-balance"
+                  name="balance"
+                  type="hidden"
+                >
+                <input
+                  id="account-1-name"
+                  name="name"
+                  type="hidden"
+                  value="Mortgage"
+                >
+                <div>
+                  Mortgage
+                </div>
+                <div class="balance">
+                  $135,789.00
+                </div>
+              </div>
+              <div class="account-right">
+                <div>
+                  <label
+                    class="import-form-label"
+                    for="account-1-interestrate"
+                  >
+                    Interest Rate
+                  </label>
+                  <input
+                    id="account-1-interestrate"
+                    name="interestrate"
+                    value=""
+                  >
+                </div>
+                <div>
+                  <label for="account-1-interestrate">
+                    Min. Monthly Payment
+                  </label>
+                  <input
+                    id="account-1-minimumpayment"
+                    name="minimumpayment"
+                    value=""
+                  >
+                </div>
+                <div>
+                  <label for="account-1-nextduedate">
+                    Next Due Date
+                  </label>
+                  <input
+                    id="account-1-nextduedate"
+                    name="nextduedate"
+                    value=""
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="import-form-account">
+              <div class="account-left">
+                <input
+                  id="account-2-id"
+                  name="id"
+                  type="hidden"
+                  value="4f8978af-dc34-4c45-bfda-5fb82925cb93-unsynced"
+                >
+                <input
+                  id="account-2-balance"
+                  name="balance"
+                  type="hidden"
+                >
+                <input
+                  id="account-2-name"
+                  name="name"
+                  type="hidden"
+                  value="Mortgage"
+                >
+                <div>
+                  Mortgage
+                </div>
+                <div class="balance">
+                  $125,789.00
+                </div>
+              </div>
+              <div class="account-right">
+                <div>
+                  <label
+                    class="import-form-label"
+                    for="account-2-interestrate"
+                  >
+                    Interest Rate
+                  </label>
+                  <input
+                    id="account-2-interestrate"
+                    name="interestrate"
+                    value=""
+                  >
+                </div>
+                <div>
+                  <label for="account-2-interestrate">
+                    Min. Monthly Payment
+                  </label>
+                  <input
+                    id="account-2-minimumpayment"
+                    name="minimumpayment"
+                    value=""
+                  >
+                </div>
+                <div>
+                  <label for="account-2-nextduedate">
+                    Next Due Date
+                  </label>
+                  <input
+                    id="account-2-nextduedate"
+                    name="nextduedate"
+                    value=""
+                  >
+                </div>
+              </div>
+            </div>
+            <button
+              class="btn btn-outline-purple"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+`;
